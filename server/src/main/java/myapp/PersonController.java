@@ -1,26 +1,32 @@
 package myapp;
 
+import org.opendolphin.core.Dolphin;
 import org.opendolphin.core.server.action.DolphinServerAction;
 import org.opendolphin.core.server.comm.ActionRegistry;
 
-import static myapp.TutorialConstants.ATT_FIRSTNAME;
-import static myapp.TutorialConstants.CMD_LOG;
-import static myapp.TutorialConstants.PM_PERSON;
+import util.DolphinMixin;
 
+import static myapp.MyAppCommands.CMD_LOG;
 /*
 	This is a controller that may have many actions that serve a common purpose.
  */
 
-public class TutorialController extends DolphinServerAction {
+public class PersonController extends DolphinServerAction implements DolphinMixin {
 	final ILogService service;
 
-	public TutorialController(ILogService service) {
+	public PersonController(ILogService service) {
 		this.service = service;
 	}
 
 	public void registerIn(ActionRegistry actionRegistry) {
 		actionRegistry.register(CMD_LOG, (command, response) -> {
-			service.log(getServerDolphin().getAt(PM_PERSON).getAt(ATT_FIRSTNAME).getValue());
+			PersonVeneer p = new PersonVeneer(get(PersonPM.ID_4711));
+			service.log(p.getFirstName());
 		});
+	}
+
+	@Override
+	public Dolphin getDolphin() {
+		return getServerDolphin();
 	}
 }

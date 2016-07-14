@@ -20,7 +20,7 @@ public class ClientStarter {
 
 		HttpClientConnector connector = new HttpClientConnector(clientDolphin,
 		                                                        commandBatcher,
-		                                                        "http://localhost:8080/myFirstDolphin/myApp/");
+		                                                        "http://localhost:8080/myApp/server/");
 		connector.setCodec(new JsonCodec());
 		connector.setUiThreadHandler(new JavaFXUiThreadHandler());
 

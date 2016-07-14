@@ -1,10 +1,12 @@
 .root {
     -fx-background-color: linear-gradient(to bottom, transparent 30%, rgba(0, 0, 0, 0.15) 100%);
 }
-#content {
+
+.rootPane {
     -fx-padding : 20;
     -fx-spacing : 10;
 }
+
 .dirty {
     -fx-background-color: papayawhip;
 }

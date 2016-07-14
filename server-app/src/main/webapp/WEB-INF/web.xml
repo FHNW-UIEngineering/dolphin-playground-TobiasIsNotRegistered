@@ -4,13 +4,13 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
     <servlet>
-        <display-name>MyAppServlet</display-name>
-        <servlet-name>MyApp</servlet-name>
+        <display-name>MyApp Server</display-name>
+        <servlet-name>server</servlet-name>
         <servlet-class>myapp.servlet.MyAppServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>MyApp</servlet-name>
-        <url-pattern>/myApp/</url-pattern>
+        <servlet-name>server</servlet-name>
+        <url-pattern>/server/</url-pattern>
     </servlet-mapping>
 </web-app>

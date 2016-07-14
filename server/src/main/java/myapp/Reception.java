@@ -19,7 +19,7 @@ public class Reception extends DolphinServerAction {
     }
 
     public void registerIn(ActionRegistry registry) {
-        // register all your actions here.
-        getServerDolphin().register(new TutorialController(logService));
+        // register all your controllers here.
+        getServerDolphin().register(new PersonController(logService));
     }
 }

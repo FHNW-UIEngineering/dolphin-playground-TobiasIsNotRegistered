@@ -11,7 +11,7 @@ import org.opendolphin.core.server.DefaultServerDolphin;
 import org.opendolphin.core.server.ServerDolphin;
 import org.opendolphin.core.server.ServerDolphinFactory;
 
-public class ApplicationInMemoryStarter {
+public class CombinedAppStarter {
 
 	public static void main(String[] args) throws Exception {
 		ClientDolphin        clientDolphin = new ClientDolphin();
