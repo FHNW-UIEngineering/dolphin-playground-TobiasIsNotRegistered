@@ -12,16 +12,16 @@ import static myapp.MyAppCommands.CMD_LOG;
  */
 
 public class PersonController extends DolphinServerAction implements DolphinMixin {
-	final ILogService service;
+	final MyService service;
 
-	public PersonController(ILogService service) {
+	public PersonController(MyService service) {
 		this.service = service;
 	}
 
 	public void registerIn(ActionRegistry actionRegistry) {
 		actionRegistry.register(CMD_LOG, (command, response) -> {
 			PersonVeneer p = new PersonVeneer(get(PersonPM.ID_4711));
-			service.log(p.getFirstName());
+			service.myServiceMethod(p.getFirstName());
 		});
 	}
 

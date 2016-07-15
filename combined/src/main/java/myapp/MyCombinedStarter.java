@@ -11,6 +11,13 @@ import org.opendolphin.core.server.DefaultServerDolphin;
 import org.opendolphin.core.server.ServerDolphin;
 import org.opendolphin.core.server.ServerDolphinFactory;
 
+
+/**
+	Starts a JavaFX client and controller with services as one combined, local application.
+ */
+
+// todo : refactor the non-application specific default setup into its own class
+
 public class MyCombinedStarter {
 
 	public static void main(String[] args) throws Exception {
@@ -36,7 +43,7 @@ public class MyCombinedStarter {
 	}
 
 	private static void registerApplicationActions(ServerDolphin serverDolphin) {
-		serverDolphin.register(new Reception());
+		serverDolphin.register(new Reception(new MyCombinedService()));
 	}
 
 }
