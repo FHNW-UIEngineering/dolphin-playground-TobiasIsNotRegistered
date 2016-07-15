@@ -2,7 +2,7 @@ apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply plugin: 'application'
 
-mainClassName = 'myapp.CombinedAppStarter' // in-memory
+mainClassName = 'myapp.MyCombinedStarter' // in-memory
 
 repositories {
     mavenCentral()
