@@ -22,18 +22,21 @@ import utils.FXBindingMixin;
 import static myapp.MyAppCommands.CMD_LOG;
 
 /**
+ * Implementation of the view details, event handling, and binding.
  * @author Dieter Holz
  */
 class RootPane extends VBox implements FXBindingMixin {
 
 	private final ClientDolphin clientDolphin;
+	private final PersonVeneer person;
 
 	private TextField firstNameField;
 	private Button    saveButton;
 	private Button    resetButton;
 
-	public RootPane(ClientDolphin clientDolphin) {
+	RootPane(ClientDolphin clientDolphin, PersonVeneer person) {
 		this.clientDolphin = clientDolphin;
+		this.person = person;
 		init();
 		initializeParts();
 		layoutParts();
@@ -48,8 +51,8 @@ class RootPane extends VBox implements FXBindingMixin {
 
 	private void initializeParts() {
 		firstNameField = new TextField();
-		saveButton = new Button("save");
-		resetButton = new Button("resetButton");
+		saveButton     = new Button("save");
+		resetButton    = new Button("resetButton");
 	}
 
 	private void layoutParts() {
@@ -57,9 +60,7 @@ class RootPane extends VBox implements FXBindingMixin {
 	}
 
 	private void addEventHandlers() {
-		EventHandler<ActionEvent> rebaseHandler = event -> clientDolphin.send(CMD_LOG,
-		                                                                      presentationModels -> new PersonVeneer(get(PersonPM.ID_4711)).firstName()
-		                                                                                                                                   .rebase());
+		EventHandler<ActionEvent> rebaseHandler = event -> clientDolphin.send(CMD_LOG, $ -> person.firstName().rebase());
 		firstNameField.setOnAction(rebaseHandler);
 		saveButton.setOnAction(rebaseHandler);
 
@@ -67,18 +68,16 @@ class RootPane extends VBox implements FXBindingMixin {
 		final Transition fadeIn = RotateTransitionBuilder.create().node(firstNameField).toAngle(0).duration(Duration.millis(200)).build();
 		final Transition fadeOut = RotateTransitionBuilder.create().node(firstNameField).fromAngle(-3).interpolator(Interpolator.LINEAR).
 				toAngle(3).cycleCount(3).duration(Duration.millis(100)).
-				                                                  onFinished(actionEvent -> {
-					                                                  new PersonVeneer(get(PersonPM.ID_4711)).firstName().reset();
+				                                                  onFinished($ -> {
+					                                                  person.firstName().reset();
 					                                                  fadeIn.playFromStart();
 				                                                  }).build();
 
-		resetButton.setOnAction(actionEvent -> fadeOut.playFromStart());
+		resetButton.setOnAction($ -> fadeOut.playFromStart());
 	}
 
 	private void addValueChangedListeners() {
-		PresentationModel pm = get(PersonPM.ID_4711);
-
-		onDirtyStateChanged(pm, evt -> {
+		onDirtyStateChanged(person.getPresentationModel(), evt -> {
 			System.out.println("dirty changed " + evt.getNewValue());
 			if ((Boolean) evt.getNewValue()) {
 				firstNameField.getStyleClass().add("dirty");
@@ -89,10 +88,9 @@ class RootPane extends VBox implements FXBindingMixin {
 	}
 
 	private void setupBinding() {
-		PresentationModel pm = get(PersonPM.ID_4711);
-		PersonVeneer      p  = new PersonVeneer(pm);
+		PresentationModel pm = person.getPresentationModel();
 
-		bindBidirectional(p.firstName()).to(firstNameField.textProperty());
+		bindBidirectional(person.firstName()).to(firstNameField.textProperty());
 
 		Converter inv = new Converter<Boolean, Boolean>() {
 			@Override
