@@ -9,7 +9,14 @@ import org.opendolphin.core.client.comm.HttpClientConnector;
 import org.opendolphin.core.client.comm.JavaFXUiThreadHandler;
 import org.opendolphin.core.comm.JsonCodec;
 
-public class ClientStarter {
+/**
+	Starts a JavaFX client locally that connects to the remote application, which runs on the server.
+ */
+
+// todo : refactor the non-application specific default setup into its own class
+// todo : make the host/port configurable from the command line
+
+public class MyRemoteStarter {
 
 	public static void main(String[] args) throws Exception {
 		ClientDolphin clientDolphin = new ClientDolphin();
