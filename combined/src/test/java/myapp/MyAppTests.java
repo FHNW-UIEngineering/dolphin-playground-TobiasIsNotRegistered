@@ -13,8 +13,6 @@ import org.opendolphin.core.client.comm.UiThreadHandler;
 import org.opendolphin.core.comm.DefaultInMemoryConfig;
 
 import static myapp.MyAppCommands.CMD_LOG;
-import static myapp.PersonVeneer.PERSON_ID;
-import static myapp.PersonVeneer.ATT_FIRSTNAME;
 import static org.junit.Assert.assertEquals;
 
 public class MyAppTests {
@@ -32,7 +30,7 @@ public class MyAppTests {
 			}
 		});
 		LogConfig.noLogs(); // Do not log any dolphin messages.
-		config.getClientDolphin().presentationModel(PERSON_ID, Collections.singletonList(ATT_FIRSTNAME));
+		config.getClientDolphin().presentationModel(PersonPM.ID_4711, Collections.singletonList(PersonPM.ATT.FIRSTNAME.name()));
 	}
 
 	private void setupConfig() {
@@ -64,6 +62,6 @@ public class MyAppTests {
 	}
 
 	private void setFirstName(String firstName) {
-		config.getClientDolphin().getAt(PERSON_ID).getAt(ATT_FIRSTNAME).setValue(firstName);
+		config.getClientDolphin().getAt(PersonPM.ID_4711).getAt(PersonPM.ATT.FIRSTNAME.name()).setValue(firstName);
 	}
 }

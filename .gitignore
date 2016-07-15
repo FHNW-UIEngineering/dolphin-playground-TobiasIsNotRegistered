@@ -74,10 +74,4 @@ gradle-app.setting
 # gradle/wrapper/gradle-wrapper.properties
 .gradle/
 .idea/
-build.gradle
 classes/
-gradle.properties
-gradle/
-gradlew
-gradlew.bat
-settings.gradle
