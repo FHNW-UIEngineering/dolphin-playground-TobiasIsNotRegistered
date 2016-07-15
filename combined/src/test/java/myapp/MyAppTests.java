@@ -41,7 +41,7 @@ public class MyAppTests implements ClientDolphinMixin {
 	public void testCallAction() throws Exception {
 		// there is a Person PM with the first name set"
 		ClientPresentationModel pm = presentationModel(PersonPM.ID_4711, null, PersonPM.ATT.values());
-		PersonVeneer clientPerson = new PersonVeneer(pm);
+		Person clientPerson = new Person(pm);
 		clientPerson.setFirstName("ClientFirstName");
 
 		// and and action is registered that changes the first name

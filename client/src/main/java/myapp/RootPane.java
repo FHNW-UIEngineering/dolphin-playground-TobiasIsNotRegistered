@@ -28,13 +28,13 @@ import static myapp.MyAppCommands.CMD_CALL_MY_SERVICE;
 class RootPane extends VBox implements FXBindingMixin {
 
 	private final ClientDolphin clientDolphin;
-	private final PersonVeneer person;
+	private final Person        person;
 
 	private TextField firstNameField;
 	private Button    saveButton;
 	private Button    resetButton;
 
-	RootPane(ClientDolphin clientDolphin, PersonVeneer person) {
+	RootPane(ClientDolphin clientDolphin, Person person) {
 		this.clientDolphin = clientDolphin;
 		this.person = person;
 		init();

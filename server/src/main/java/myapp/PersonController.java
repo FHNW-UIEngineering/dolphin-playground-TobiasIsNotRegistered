@@ -20,7 +20,7 @@ public class PersonController extends DolphinServerAction implements DolphinMixi
 
 	public void registerIn(ActionRegistry actionRegistry) {
 		actionRegistry.register(CMD_CALL_MY_SERVICE, (command, response) -> {
-			PersonVeneer p = new PersonVeneer(get(PersonPM.ID_4711));
+			Person p = new Person(get(PersonPM.ID_4711));
 			service.myServiceMethod(p);
 		});
 	}

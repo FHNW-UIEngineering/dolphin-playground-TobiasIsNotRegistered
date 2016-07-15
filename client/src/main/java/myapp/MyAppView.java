@@ -16,8 +16,8 @@ import utils.ClientDolphinMixin;
  */
 
 public class MyAppView extends Application implements ClientDolphinMixin {
-	static ClientDolphin clientDolphin;
-	protected PersonVeneer person;
+	static    ClientDolphin clientDolphin;
+	protected Person        person;
 
 	public MyAppView() {
 	}
@@ -27,7 +27,7 @@ public class MyAppView extends Application implements ClientDolphinMixin {
 		// todo dk: when a PM has a self-provided ID, it usually has no specific type. We can safely use null.
 		ClientPresentationModel pm = presentationModel(PersonPM.ID_4711, PersonPM.TYPE, PersonPM.ATT.values());
 
-		person = new PersonVeneer(pm);
+		person = new Person(pm);
 		person.setFirstName("");
 
 		pm.rebase();

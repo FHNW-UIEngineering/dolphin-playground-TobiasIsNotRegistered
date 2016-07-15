@@ -2,20 +2,20 @@ package myapp;
 
 import org.opendolphin.core.Attribute;
 import org.opendolphin.core.PresentationModel;
+import util.Veneer;
 
 /**
+ * The Veneer class for a Person.
  * @author Dieter Holz
  */
-public class PersonVeneer {
+public class Person extends Veneer {
 
-	private final PresentationModel pm;
-
-	public PersonVeneer(PresentationModel pm){
-		this.pm = pm;
+	public Person(PresentationModel pm){
+		super(pm);
 	}
 
 	public Attribute firstName() {
-		return pm.getAt(PersonPM.ATT.FIRSTNAME.name());
+		return getPresentationModel().getAt(PersonPM.ATT.FIRSTNAME.name());
 	}
 
 	public String getFirstName() {
@@ -26,8 +26,5 @@ public class PersonVeneer {
 		firstName().setValue(firstName);
 	}
 
-	public PresentationModel getPresentationModel(){
-		return pm;
-	}
 
 }
