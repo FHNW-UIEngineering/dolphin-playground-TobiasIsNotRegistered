@@ -1,0 +1,5 @@
+dependencies {
+    compile project(':shared')
+    compile "org.open-dolphin:dolphin-server:$dolphinVersion"
+    compile 'javax.servlet:servlet-api:2.5'
+}
