@@ -33,7 +33,7 @@ public class MyRemoteStarter {
 
 		clientDolphin.setClientConnector(connector);
 
-		MyApp.clientDolphin = clientDolphin;
-		Application.launch(MyApp.class);
+		MyAppView.clientDolphin = clientDolphin;
+		Application.launch(MyAppView.class);
 	}
 }

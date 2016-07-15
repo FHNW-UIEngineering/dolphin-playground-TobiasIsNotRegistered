@@ -31,8 +31,8 @@ public class CombinedAppStarter {
 
 		registerApplicationActions(serverDolphin);
 
-		MyApp.clientDolphin = clientDolphin;
-		Application.launch(MyApp.class);
+		MyAppView.clientDolphin = clientDolphin;
+		Application.launch(MyAppView.class);
 	}
 
 	private static void registerApplicationActions(ServerDolphin serverDolphin) {

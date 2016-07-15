@@ -11,14 +11,19 @@ import org.opendolphin.core.client.ClientPresentationModel;
 
 import utils.ClientDolphinMixin;
 
-public class MyApp extends Application implements ClientDolphinMixin {
+/**
+ * The main view of MyApp.
+ */
+
+public class MyAppView extends Application implements ClientDolphinMixin {
 	static ClientDolphin clientDolphin;
 
-	public MyApp() {
+	public MyAppView() {
 	}
 
 	@Override
 	public void init() throws Exception {
+		// todo dk: when a PM has a self-provided ID, it usually has no specific type. We can safely use null.
 		ClientPresentationModel pm = presentationModel(PersonPM.ID_4711, PersonPM.TYPE, PersonPM.ATT.values());
 
 		PersonVeneer p = new PersonVeneer(pm);
@@ -32,7 +37,7 @@ public class MyApp extends Application implements ClientDolphinMixin {
 		Pane root = new RootPane(clientDolphin);
 
 		Scene scene = new Scene(root, 300, 250);
-		scene.getStylesheets().add(MyApp.class.getResource("/myapp/myApp.css").toExternalForm());
+		scene.getStylesheets().add(MyAppView.class.getResource("/myapp/myApp.css").toExternalForm());
 
 		stage.setScene(scene);
 		stage.setTitle(getClass().getName());
