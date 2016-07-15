@@ -26,6 +26,7 @@ public interface FXBindingMixin extends DolphinMixin {
 		return bind(attributeName, Tag.VALUE);
 	}
 
+	// todo dk: grammatically correct would be "bindBidirectionally"
 	default ToBidirectionalPropertyAble bindBidirectional(Attribute attribute) {
 		return new ToBidirectionalPropertyAble(attribute);
 	}
