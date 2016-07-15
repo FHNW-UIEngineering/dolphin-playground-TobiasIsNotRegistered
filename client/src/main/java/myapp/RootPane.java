@@ -19,7 +19,7 @@ import org.opendolphin.core.client.ClientDolphin;
 
 import utils.FXBindingMixin;
 
-import static myapp.MyAppCommands.CMD_LOG;
+import static myapp.MyAppCommands.CMD_CALL_MY_SERVICE;
 
 /**
  * Implementation of the view details, event handling, and binding.
@@ -60,7 +60,7 @@ class RootPane extends VBox implements FXBindingMixin {
 	}
 
 	private void addEventHandlers() {
-		EventHandler<ActionEvent> rebaseHandler = event -> clientDolphin.send(CMD_LOG, $ -> person.firstName().rebase());
+		EventHandler<ActionEvent> rebaseHandler = event -> clientDolphin.send(CMD_CALL_MY_SERVICE, $ -> person.firstName().rebase());
 		firstNameField.setOnAction(rebaseHandler);
 		saveButton.setOnAction(rebaseHandler);
 

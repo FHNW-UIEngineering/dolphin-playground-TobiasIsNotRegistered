@@ -2,7 +2,7 @@ package myapp;
 
 public class MyCombinedService implements MyService {
     @Override
-    public void myServiceMethod(Object message) {
-        System.out.println("Combined received message = " + message);
+    public void myServiceMethod(PersonVeneer person) {
+        System.out.println("Combined received person with first name = " + person.getFirstName());
     }
 }

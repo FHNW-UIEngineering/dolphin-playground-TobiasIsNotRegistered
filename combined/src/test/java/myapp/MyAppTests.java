@@ -1,36 +1,33 @@
 package myapp;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.opendolphin.LogConfig;
+import org.opendolphin.core.Dolphin;
+import org.opendolphin.core.client.ClientPresentationModel;
 import org.opendolphin.core.client.comm.InMemoryClientConnector;
 import org.opendolphin.core.client.comm.SynchronousInMemoryClientConnector;
-import org.opendolphin.core.client.comm.UiThreadHandler;
 import org.opendolphin.core.comm.DefaultInMemoryConfig;
+import utils.ClientDolphinMixin;
 
-import static myapp.MyAppCommands.CMD_LOG;
+import static myapp.MyAppCommands.CMD_CALL_MY_SERVICE;
 import static org.junit.Assert.assertEquals;
 
-public class MyAppTests {
+public class MyAppTests implements ClientDolphinMixin {
 
 	private DefaultInMemoryConfig config;
+
+	@Override
+	public Dolphin getDolphin() {
+		return config.getClientDolphin();
+	}
 
 	@Before
 	public void setup() {
 		setupConfig();
 		config.getServerDolphin().registerDefaultActions();
-		config.getClientDolphin().getClientConnector().setUiThreadHandler(new UiThreadHandler() {
-			@Override
-			public void executeInsideUiThread(Runnable runnable) {
-				runnable.run();
-			}
-		});
+		config.getClientDolphin().getClientConnector().setUiThreadHandler(runnable -> runnable.run());
 		LogConfig.noLogs(); // Do not log any dolphin messages.
-		config.getClientDolphin().presentationModel(PersonPM.ID_4711, Collections.singletonList(PersonPM.ATT.FIRSTNAME.name()));
 	}
 
 	private void setupConfig() {
@@ -40,28 +37,22 @@ public class MyAppTests {
 		config.getClientDolphin().setClientConnector(inMemoryClientConnector);
 	}
 
-	/**
-	 * with 0.8 and above
-	 */
-//    private void setupConfig() {
-//        config = new DefaultInMemoryConfig(false);
-//    }
 	@Test
 	public void testCallAction() throws Exception {
-		setFirstName("Dolphin");
-		final List<Boolean> serverSideCalled = new ArrayList<>();
-		config.getServerDolphin().register(new Reception(new ILogService() {
-			@Override
-			public void log(Object message) {
-				serverSideCalled.add(Boolean.TRUE);
-				assertEquals("Dolphin", message);
-			}
-		}));
-		config.getClientDolphin().send(CMD_LOG);
-		assertEquals(1, serverSideCalled.size());
+		// there is a Person PM with the first name set"
+		ClientPresentationModel pm = presentationModel(PersonPM.ID_4711, null, PersonPM.ATT.values());
+		PersonVeneer clientPerson = new PersonVeneer(pm);
+		clientPerson.setFirstName("ClientFirstName");
+
+		// and and action is registered that changes the first name
+		config.getServerDolphin().register(new Reception(serverPerson -> {
+            assertEquals("ClientFirstName", serverPerson.getFirstName());
+            serverPerson.setFirstName("ServerFirstName");
+        }));
+
+		// then calling the action changes the first name on the client
+		config.getClientDolphin().send(CMD_CALL_MY_SERVICE);
+		assertEquals("ServerFirstName", clientPerson.getFirstName());
 	}
 
-	private void setFirstName(String firstName) {
-		config.getClientDolphin().getAt(PersonPM.ID_4711).getAt(PersonPM.ATT.FIRSTNAME.name()).setValue(firstName);
-	}
 }

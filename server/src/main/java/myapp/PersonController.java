@@ -6,7 +6,7 @@ import org.opendolphin.core.server.comm.ActionRegistry;
 
 import util.DolphinMixin;
 
-import static myapp.MyAppCommands.CMD_LOG;
+import static myapp.MyAppCommands.CMD_CALL_MY_SERVICE;
 /*
 	This is a controller that may have many actions that serve a common purpose.
  */
@@ -19,9 +19,9 @@ public class PersonController extends DolphinServerAction implements DolphinMixi
 	}
 
 	public void registerIn(ActionRegistry actionRegistry) {
-		actionRegistry.register(CMD_LOG, (command, response) -> {
+		actionRegistry.register(CMD_CALL_MY_SERVICE, (command, response) -> {
 			PersonVeneer p = new PersonVeneer(get(PersonPM.ID_4711));
-			service.myServiceMethod(p.getFirstName());
+			service.myServiceMethod(p);
 		});
 	}
 
