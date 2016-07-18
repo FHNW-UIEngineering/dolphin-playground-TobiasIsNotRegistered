@@ -7,6 +7,19 @@
     -fx-spacing : 10;
 }
 
+.heading {
+    -fx-font-family: 'DS-Digital';
+    -fx-font-size: 60;
+    -fx-background-color: linear-gradient(from 50% 0% to 50% 100%, rgb(33, 33, 33) 0%, rgb(66, 66, 66) 100%);
+    -fx-text-fill: white;
+    -fx-max-width: 1024px;
+}
+
 .dirty {
     -fx-background-color: papayawhip;
+}
+
+.icon {
+    -fx-font-family: 'FontAwesome';
+    -fx-font-size: 24;
 }

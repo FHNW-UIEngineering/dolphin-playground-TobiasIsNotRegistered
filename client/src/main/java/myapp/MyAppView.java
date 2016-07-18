@@ -38,6 +38,7 @@ public class MyAppView extends Application implements ClientDolphinMixin {
 		Pane root = new RootPane(clientDolphin, person);
 
 		Scene scene = new Scene(root, 300, 250);
+		scene.getStylesheets().add(MyAppView.class.getResource("/fonts/fonts.css").toExternalForm());
 		scene.getStylesheets().add(MyAppView.class.getResource("/myapp/myApp.css").toExternalForm());
 
 		stage.setScene(scene);

@@ -54,7 +54,9 @@ class RootPane extends VBox implements FXBindingMixin {
     }
 
     private void initializeParts() {
-        firstNameLabel               = new Label();
+        firstNameLabel = new Label();
+        firstNameLabel.getStyleClass().add("heading");
+
         firstNameFieldJavaFXBinding  = new TextField();
         firstNameFieldDolphinBinding = new TextField();
         saveButton                   = new Button("save");
