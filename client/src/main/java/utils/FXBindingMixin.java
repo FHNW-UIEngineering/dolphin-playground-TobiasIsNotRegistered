@@ -105,7 +105,7 @@ public interface FXBindingMixin extends DolphinMixin {
 		}
 
 		public void to(Property property) {
-			attribute.addPropertyChangeListener("value", evt -> property.setValue(evt.getNewValue()));
+			attribute.addPropertyChangeListener(Attribute.VALUE, evt -> property.setValue(evt.getNewValue()));
 			property.setValue(attribute.getValue());
 			property.addListener((observable, oldValue, newValue) -> attribute.setValue(newValue));
 			attribute.setValue(property.getValue());
@@ -120,7 +120,7 @@ public interface FXBindingMixin extends DolphinMixin {
 		}
 
 		public void to(Property property) {
-			attribute.addPropertyChangeListener("value", evt -> property.setValue(evt.getNewValue()));
+			attribute.addPropertyChangeListener(Attribute.VALUE, evt -> property.setValue(evt.getNewValue()));
 			property.setValue(attribute.getValue());
 		}
 	}

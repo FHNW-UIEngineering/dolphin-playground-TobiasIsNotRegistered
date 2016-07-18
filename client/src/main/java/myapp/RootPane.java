@@ -1,8 +1,7 @@
 package myapp;
 
 import javafx.animation.Interpolator;
-import javafx.animation.RotateTransitionBuilder;
-import javafx.animation.Transition;
+import javafx.animation.RotateTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
@@ -57,10 +56,10 @@ class RootPane extends VBox implements FXBindingMixin {
         firstNameLabel = new Label();
         firstNameLabel.getStyleClass().add("heading");
 
-        firstNameFieldJavaFXBinding  = new TextField();
+        firstNameFieldJavaFXBinding = new TextField();
         firstNameFieldDolphinBinding = new TextField();
-        saveButton                   = new Button("save");
-        resetButton                  = new Button("resetButton");
+        saveButton = new Button("save");
+        resetButton = new Button("resetButton");
     }
 
     private void layoutParts() {
@@ -72,21 +71,24 @@ class RootPane extends VBox implements FXBindingMixin {
         firstNameFieldDolphinBinding.setOnAction(rebaseHandler);
         saveButton.setOnAction(rebaseHandler);
 
-        //todo get rid of the builders
-        final Transition fadeIn = RotateTransitionBuilder.create().node(firstNameFieldDolphinBinding).toAngle(0).duration(Duration.millis(200)).build();
-        final Transition fadeOut = RotateTransitionBuilder.create().node(firstNameFieldDolphinBinding).fromAngle(-3).interpolator(Interpolator.LINEAR).
-                toAngle(3).cycleCount(3).duration(Duration.millis(100)).
-                                                                  onFinished($ -> {
-                                                                      person.firstName().reset();
-                                                                      fadeIn.playFromStart();
-                                                                  }).build();
+        final RotateTransition fadeIn = new RotateTransition(Duration.millis(200), firstNameFieldDolphinBinding);
+        fadeIn.setToAngle(0.0);
+
+        final RotateTransition fadeOut = new RotateTransition(Duration.millis(100), firstNameFieldDolphinBinding);
+        fadeOut.setFromAngle(-3.0);
+        fadeOut.setInterpolator(Interpolator.LINEAR);
+        fadeOut.setToAngle(3.0);
+        fadeOut.setCycleCount(3);
+        fadeOut.setOnFinished($ -> {
+            person.firstName().reset();
+            fadeIn.playFromStart();
+        });
 
         resetButton.setOnAction($ -> fadeOut.playFromStart());
     }
 
     private void addValueChangedListeners() {
         onDirtyStateChanged(person.getPresentationModel(), evt -> {
-            System.out.println("dirty changed " + evt.getNewValue());
             if ((Boolean) evt.getNewValue()) {
                 firstNameFieldDolphinBinding.getStyleClass().add("dirty");
             } else {
