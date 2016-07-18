@@ -6,8 +6,6 @@ import org.opendolphin.core.client.ClientPresentationModel;
 
 import util.DolphinMixin;
 
-import static com.sun.tools.doclint.Entity.nu;
-
 /**
  * @author Dieter Holz
  */
