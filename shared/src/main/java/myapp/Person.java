@@ -23,7 +23,7 @@ public class Person extends Veneer {
         return getPresentationModel().getAt(PersonPM.ATT.FIRSTNAME.name());
     }
 
-    public Property<String> nameProperty() {
+    public Property<String> firstNameProperty() {
         return new AttributeWrapper<>(firstName());
     }
 

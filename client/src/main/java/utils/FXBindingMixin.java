@@ -1,5 +1,8 @@
 package utils;
 
+import java.util.function.Function;
+
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.Property;
 
 import org.opendolphin.core.Attribute;
@@ -7,12 +10,12 @@ import org.opendolphin.core.Dolphin;
 import org.opendolphin.core.PresentationModel;
 import org.opendolphin.core.Tag;
 
-import util.DolphinMixin;
+import util.Veneer;
 
 /**
  * @author Dieter Holz
  */
-public interface FXBindingMixin extends DolphinMixin {
+public interface FXBindingMixin extends ClientDolphinMixin {
 
 	default ToAttributeAble bind(Property property) {
 		return new ToAttributeAble(property, getDolphin());
@@ -26,18 +29,45 @@ public interface FXBindingMixin extends DolphinMixin {
 		return bind(attributeName, Tag.VALUE);
 	}
 
-	// todo dk: grammatically correct would be "bindBidirectionally"
-	default ToBidirectionalPropertyAble bindBidirectional(Attribute attribute) {
-		return new ToBidirectionalPropertyAble(attribute);
+	default WithPropertyAble interrelate(Attribute attribute) {
+		return new WithPropertyAble(attribute);
 	}
 
-	default OfBidirectionalAble bindBidirectional(String attributeName) {
-		return bindBidirectional(attributeName, Tag.VALUE);
+	default OfInterrelateAble interrelate(String attributeName) {
+		return interrelate(attributeName, Tag.VALUE);
 	}
 
-	default OfBidirectionalAble bindBidirectional(String attributeName, Tag tag) {
-		return new OfBidirectionalAble(attributeName, tag);
+	default OfInterrelateAble interrelate(String attributeName, Tag tag) {
+		return new OfInterrelateAble(attributeName, tag);
 	}
+
+    default DirtyToPropertyAble bindDirtyStateOf(Veneer veneer){
+	    return new DirtyToPropertyAble(veneer.getPresentationModel());
+    }
+
+    class DirtyToPropertyAble {
+
+        private final PresentationModel          pm;
+        private final Function<Boolean, Boolean> converter;
+
+        DirtyToPropertyAble(PresentationModel pm){
+            this(pm, b -> b);
+        }
+
+        DirtyToPropertyAble(PresentationModel pm, Function<Boolean, Boolean> converter) {
+            this.pm = pm;
+            this.converter = converter;
+        }
+
+   		public void to(BooleanProperty property) {
+            pm.addPropertyChangeListener(Attribute.DIRTY_PROPERTY, evt -> property.setValue(converter.apply((Boolean) evt.getNewValue())));
+            property.setValue(converter.apply(pm.isDirty()));
+        }
+
+   		public DirtyToPropertyAble convertedBy(Function<Boolean, Boolean> converter){
+            return new DirtyToPropertyAble(pm, converter);
+        }
+   	}
 
 	class OfAbleTerminal {
 		private final Property property;
@@ -45,7 +75,7 @@ public interface FXBindingMixin extends DolphinMixin {
 		private final Tag      tag;
 		private final Dolphin  dolphin;
 
-		public OfAbleTerminal(Property property, String attributeName, Tag tag, Dolphin dolphin) {
+        OfAbleTerminal(Property property, String attributeName, Tag tag, Dolphin dolphin) {
 			this.property = property;
 			this.attributeName = attributeName;
 			this.tag = tag;
@@ -68,7 +98,7 @@ public interface FXBindingMixin extends DolphinMixin {
 		private final Tag     tag;
 		private final Dolphin clientDolphin;
 
-		public OfAble(String attributeName, Tag tag, Dolphin clientDolphin) {
+		OfAble(String attributeName, Tag tag, Dolphin clientDolphin) {
 			this.attributeName = attributeName;
 			this.tag = tag;
 			this.clientDolphin = clientDolphin;
@@ -83,28 +113,28 @@ public interface FXBindingMixin extends DolphinMixin {
 		}
 	}
 
-	class OfBidirectionalAble {
+	class OfInterrelateAble {
 		private final String attributeName;
 		private final Tag    tag;
 
-		public OfBidirectionalAble(String attributeName, Tag tag) {
+		OfInterrelateAble(String attributeName, Tag tag) {
 			this.attributeName = attributeName;
 			this.tag = tag;
 		}
 
-		public ToBidirectionalPropertyAble of(PresentationModel pm) {
-			return new ToBidirectionalPropertyAble(pm.getAt(attributeName, tag));
+		public WithPropertyAble of(PresentationModel pm) {
+			return new WithPropertyAble(pm.getAt(attributeName, tag));
 		}
 	}
 
-	class ToBidirectionalPropertyAble {
+	class WithPropertyAble {
 		private final Attribute attribute;
 
-		public ToBidirectionalPropertyAble(Attribute attribute) {
+		WithPropertyAble(Attribute attribute) {
 			this.attribute = attribute;
 		}
 
-		public void to(Property property) {
+		public void with(Property property) {
 			attribute.addPropertyChangeListener(Attribute.VALUE, evt -> property.setValue(evt.getNewValue()));
 			property.setValue(attribute.getValue());
 			property.addListener((observable, oldValue, newValue) -> attribute.setValue(newValue));
@@ -115,7 +145,7 @@ public interface FXBindingMixin extends DolphinMixin {
 	class ToPropertyAble {
 		private final Attribute attribute;
 
-		public ToPropertyAble(Attribute attribute) {
+		ToPropertyAble(Attribute attribute) {
 			this.attribute = attribute;
 		}
 
@@ -129,7 +159,7 @@ public interface FXBindingMixin extends DolphinMixin {
 		private final Property property;
 		private final Dolphin  clientDolphin;
 
-		public ToAttributeAble(Property property, Dolphin clientDolphin) {
+		ToAttributeAble(Property property, Dolphin clientDolphin) {
 			this.property = property;
 			this.clientDolphin = clientDolphin;
 		}

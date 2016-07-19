@@ -31,9 +31,9 @@ class RootPane extends VBox implements FXBindingMixin {
     private final ClientDolphin clientDolphin;
     private final Person        person;
 
-    private Label     firstNameLabel;
-    private TextField firstNameFieldJavaFXBinding;
-    private TextField firstNameFieldDolphinBinding;
+    private Label     nameLabel;
+    private TextField nameFieldA;
+    private TextField nameFieldB;
     private Button    saveButton;
     private Button    resetButton;
 
@@ -53,28 +53,28 @@ class RootPane extends VBox implements FXBindingMixin {
     }
 
     private void initializeParts() {
-        firstNameLabel = new Label();
-        firstNameLabel.getStyleClass().add("heading");
+        nameLabel = new Label();
+        nameLabel.getStyleClass().add("heading");
 
-        firstNameFieldJavaFXBinding = new TextField();
-        firstNameFieldDolphinBinding = new TextField();
+        nameFieldA = new TextField();
+        nameFieldB = new TextField();
         saveButton = new Button("save");
         resetButton = new Button("resetButton");
     }
 
     private void layoutParts() {
-        getChildren().addAll(firstNameLabel, firstNameFieldJavaFXBinding, firstNameFieldDolphinBinding, saveButton, resetButton);
+        getChildren().addAll(nameLabel, nameFieldA, nameFieldB, saveButton, resetButton);
     }
 
     private void addEventHandlers() {
-        EventHandler<ActionEvent> rebaseHandler = event -> clientDolphin.send(CMD_CALL_MY_SERVICE, $ -> person.firstName().rebase());
-        firstNameFieldDolphinBinding.setOnAction(rebaseHandler);
+        EventHandler<ActionEvent> rebaseHandler = $$ -> send(CMD_CALL_MY_SERVICE, $ -> person.firstName().rebase());
+        nameFieldB.setOnAction(rebaseHandler);
         saveButton.setOnAction(rebaseHandler);
 
-        final RotateTransition fadeIn = new RotateTransition(Duration.millis(200), firstNameFieldDolphinBinding);
+        final RotateTransition fadeIn = new RotateTransition(Duration.millis(200), nameFieldB);
         fadeIn.setToAngle(0.0);
 
-        final RotateTransition fadeOut = new RotateTransition(Duration.millis(100), firstNameFieldDolphinBinding);
+        final RotateTransition fadeOut = new RotateTransition(Duration.millis(100), nameFieldB);
         fadeOut.setFromAngle(-3.0);
         fadeOut.setInterpolator(Interpolator.LINEAR);
         fadeOut.setToAngle(3.0);
@@ -88,24 +88,29 @@ class RootPane extends VBox implements FXBindingMixin {
     }
 
     private void addValueChangedListeners() {
-        onDirtyStateChanged(person.getPresentationModel(), evt -> {
-            if ((Boolean) evt.getNewValue()) {
-                firstNameFieldDolphinBinding.getStyleClass().add("dirty");
+        onDirtyStateChanged(person, (observable, oldValue, newValue) -> {
+            if (newValue) {
+                nameFieldB.getStyleClass().add("dirty");
             } else {
-                firstNameFieldDolphinBinding.getStyleClass().remove("dirty");
+                nameFieldB.getStyleClass().remove("dirty");
             }
         });
     }
 
     private void setupBinding() {
-        PresentationModel pm = person.getPresentationModel();
-
         // use JavaFX binding via the 'nameProperty'
-        firstNameLabel.textProperty().bind(person.nameProperty());
-        firstNameFieldJavaFXBinding.textProperty().bindBidirectional(person.nameProperty());
+        // this is applicable for the value of an attribute only
+        nameLabel.textProperty().bind(person.firstNameProperty());
+        nameFieldA.textProperty().bindBidirectional(person.firstNameProperty());
 
-        // use OpenDolphin binding via the 'firstName attribute'
-        bindBidirectional(person.firstName()).to(firstNameFieldDolphinBinding.textProperty());
+        // use FXBindingMixin for bidirectional binding via the 'firstName attribute'
+        interrelate(person.firstName()).with(nameFieldB.textProperty());
+
+        // use FXBindingMixin for binding the dirty state of a veneer
+        bindDirtyStateOf(person).convertedBy(b -> !b).to(saveButton.disableProperty());
+
+        // the Open-Dolphin way of binding
+        PresentationModel pm = person.getPresentationModel();
 
         Converter inv = new Converter<Boolean, Boolean>() {
             @Override
@@ -113,7 +118,7 @@ class RootPane extends VBox implements FXBindingMixin {
                 return !value;
             }
         };
-        JFXBinder.bindInfo(Attribute.DIRTY_PROPERTY).of(pm).using(inv).to("disabled").of(saveButton);
+
         JFXBinder.bindInfo(Attribute.DIRTY_PROPERTY).of(pm).using(inv).to("disabled").of(resetButton);
     }
 

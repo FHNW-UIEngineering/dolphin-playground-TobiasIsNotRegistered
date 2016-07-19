@@ -1,8 +1,12 @@
 package utils;
 
+import java.util.List;
+
 import org.opendolphin.core.client.ClientAttribute;
 import org.opendolphin.core.client.ClientDolphin;
 import org.opendolphin.core.client.ClientPresentationModel;
+import org.opendolphin.core.client.comm.OnFinishedHandler;
+import org.opendolphin.core.client.comm.OnFinishedHandlerAdapter;
 
 import util.DolphinMixin;
 
@@ -22,6 +26,15 @@ public interface ClientDolphinMixin extends DolphinMixin {
 		}
 		return getClientDolphin().presentationModel(pmId, type, clientAttributes);
 	}
+
+    default void send(String commandName, OnFinishedHandler handler) {
+  		getClientDolphin().send(commandName, handler);
+  	}
+
+  	default void send(String commandName) {
+  		getClientDolphin().send(commandName);
+  	}
+
 
 	default ClientDolphin getClientDolphin() {
 		return (ClientDolphin) getDolphin();
