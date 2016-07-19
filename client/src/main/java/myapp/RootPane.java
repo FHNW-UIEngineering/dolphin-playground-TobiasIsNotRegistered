@@ -56,9 +56,9 @@ class RootPane extends VBox implements FXBindingMixin {
         nameLabel = new Label();
         nameLabel.getStyleClass().add("heading");
 
-        nameFieldA = new TextField();
-        nameFieldB = new TextField();
-        saveButton = new Button("save");
+        nameFieldA  = new TextField();
+        nameFieldB  = new TextField();
+        saveButton  = new Button("save");
         resetButton = new Button("resetButton");
     }
 
@@ -109,7 +109,7 @@ class RootPane extends VBox implements FXBindingMixin {
         // use FXBindingMixin for binding the dirty state of a veneer
         bindDirtyStateOf(person).convertedBy(b -> !b).to(saveButton.disableProperty());
 
-        // the Open-Dolphin way of binding
+        // the Open-Dolphin way of binding (there should always be a more convenient way provided by FXBindingMixin)
         PresentationModel pm = person.getPresentationModel();
 
         Converter inv = new Converter<Boolean, Boolean>() {

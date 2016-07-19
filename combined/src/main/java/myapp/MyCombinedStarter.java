@@ -2,48 +2,27 @@ package myapp;
 
 import javafx.application.Application;
 
-import org.opendolphin.core.client.ClientDolphin;
-import org.opendolphin.core.client.ClientModelStore;
-import org.opendolphin.core.client.comm.BlindCommandBatcher;
-import org.opendolphin.core.client.comm.InMemoryClientConnector;
-import org.opendolphin.core.client.comm.JavaFXUiThreadHandler;
-import org.opendolphin.core.server.DefaultServerDolphin;
 import org.opendolphin.core.server.ServerDolphin;
-import org.opendolphin.core.server.ServerDolphinFactory;
 
+import myapp.util.DefaultCombinedDolphinProvider;
 
 /**
-	Starts a JavaFX client and controller with services as one combined, local application.
+ * Starts a JavaFX client and controller with services as one combined, local application.
  */
-
-// todo : refactor the non-application specific default setup into its own class
 
 public class MyCombinedStarter {
 
-	public static void main(String[] args) throws Exception {
-		ClientDolphin        clientDolphin = new ClientDolphin();
-		DefaultServerDolphin serverDolphin = (DefaultServerDolphin) ServerDolphinFactory.create();
+    public static void main(String[] args) throws Exception {
+        DefaultCombinedDolphinProvider dolphinProvider = new DefaultCombinedDolphinProvider();
 
-		BlindCommandBatcher commandBatcher = new BlindCommandBatcher();
-		commandBatcher.setMergeValueChanges(true);
+        registerApplicationActions(dolphinProvider.getServerDolphin());
+        MyAppView.clientDolphin = dolphinProvider.getClientDolphin();
 
-		InMemoryClientConnector clientConnector = new InMemoryClientConnector(clientDolphin, serverDolphin.getServerConnector(), commandBatcher);
-		clientConnector.setSleepMillis(100);
-		clientConnector.setUiThreadHandler(new JavaFXUiThreadHandler());
+        Application.launch(MyAppView.class);
+    }
 
-		clientDolphin.setClientConnector(clientConnector);
-		clientDolphin.setClientModelStore(new ClientModelStore(clientDolphin));
-
-		serverDolphin.registerDefaultActions();
-
-		registerApplicationActions(serverDolphin);
-
-		MyAppView.clientDolphin = clientDolphin;
-		Application.launch(MyAppView.class);
-	}
-
-	private static void registerApplicationActions(ServerDolphin serverDolphin) {
-		serverDolphin.register(new Reception(new MyCombinedService()));
-	}
+    private static void registerApplicationActions(ServerDolphin serverDolphin) {
+        serverDolphin.register(new Reception(new MyCombinedService()));
+    }
 
 }
