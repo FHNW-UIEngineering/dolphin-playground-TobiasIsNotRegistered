@@ -19,6 +19,7 @@ public class MyRemoteStarter {
         String serverURL = "http://" + host + "/myApp/server/";
 
         MyAppView.clientDolphin = DefaultClientDolphinProvider.getClientDolphin(serverURL);
+
         Application.launch(MyAppView.class);
     }
 }
