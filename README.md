@@ -21,8 +21,8 @@ It contains the following modules/projects
 
 ##Application introduction##
 
-We implement a very simple application that contains only one text field and two buttons to
-'save' or 'reset' the value. 'Saving' will do nothing but printing the current field value
+We implement a very simple application that contains only one labe two text fields to show the various binding options
+and two buttons to 'save' or 'reset' the value. 'Saving' will do nothing but printing the current field value
 on the server side.
 
 Both buttons are only enabled if there is really something to save/reset, i.e. the field value is dirty.
