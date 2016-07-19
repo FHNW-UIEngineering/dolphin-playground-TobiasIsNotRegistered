@@ -16,16 +16,16 @@ import utils.ClientDolphinMixin;
  */
 
 public class MyAppView extends Application implements ClientDolphinMixin {
-	static    ClientDolphin clientDolphin;
-	protected Person        person;
+    static  ClientDolphin clientDolphin;
+
+    private Person person;
 
 	public MyAppView() {
 	}
 
 	@Override
 	public void init() throws Exception {
-		// todo dk: when a PM has a self-provided ID, it usually has no specific type. We can safely use null.
-		ClientPresentationModel pm = presentationModel(PersonPM.ID_4711, PersonPM.TYPE, PersonPM.ATT.values());
+		ClientPresentationModel pm = presentationModel(PersonPM.ID_4711, PersonPM.ATT.values());
 
 		person = new Person(pm);
 		person.setFirstName("");
@@ -37,7 +37,7 @@ public class MyAppView extends Application implements ClientDolphinMixin {
 	public void start(Stage stage) throws Exception {
 		Pane root = new RootPane(clientDolphin, person);
 
-		Scene scene = new Scene(root, 300, 250);
+		Scene scene = new Scene(root);
 		scene.getStylesheets().add(MyAppView.class.getResource("/fonts/fonts.css").toExternalForm());
 		scene.getStylesheets().add(MyAppView.class.getResource("/myapp/myApp.css").toExternalForm());
 

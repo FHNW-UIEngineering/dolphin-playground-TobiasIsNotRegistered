@@ -15,6 +15,13 @@ import util.DolphinMixin;
  */
 public interface ClientDolphinMixin extends DolphinMixin {
 
+    /*
+    when a PM has a self-provided ID, it usually has no specific type. We can safely use null.
+     */
+    default ClientPresentationModel presentationModel(String pmId, Enum[] attr){
+        return presentationModel(pmId, null, attr);
+    }
+
 	default ClientPresentationModel presentationModel(String pmId, String type, Enum[] attr) {
 		ClientAttribute[] clientAttributes = new ClientAttribute[attr.length];
 		for (int i = 0; i < attr.length; i++) {
