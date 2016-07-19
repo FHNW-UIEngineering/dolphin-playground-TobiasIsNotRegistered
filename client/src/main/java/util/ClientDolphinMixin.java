@@ -1,14 +1,9 @@
-package utils;
-
-import java.util.List;
+package util;
 
 import org.opendolphin.core.client.ClientAttribute;
 import org.opendolphin.core.client.ClientDolphin;
 import org.opendolphin.core.client.ClientPresentationModel;
 import org.opendolphin.core.client.comm.OnFinishedHandler;
-import org.opendolphin.core.client.comm.OnFinishedHandlerAdapter;
-
-import util.DolphinMixin;
 
 /**
  * @author Dieter Holz

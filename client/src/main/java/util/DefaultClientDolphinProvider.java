@@ -1,4 +1,4 @@
-package utils;
+package util;
 
 import org.opendolphin.core.client.ClientDolphin;
 import org.opendolphin.core.client.ClientModelStore;

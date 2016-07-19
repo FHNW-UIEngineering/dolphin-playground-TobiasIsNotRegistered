@@ -9,7 +9,7 @@ import org.opendolphin.core.Dolphin;
 import org.opendolphin.core.client.ClientDolphin;
 import org.opendolphin.core.client.ClientPresentationModel;
 
-import utils.ClientDolphinMixin;
+import util.ClientDolphinMixin;
 
 /**
  * The main view of MyApp.

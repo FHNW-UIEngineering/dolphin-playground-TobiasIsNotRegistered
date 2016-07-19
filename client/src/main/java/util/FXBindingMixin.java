@@ -1,4 +1,4 @@
-package utils;
+package util;
 
 import java.util.function.Function;
 
@@ -9,8 +9,6 @@ import org.opendolphin.core.Attribute;
 import org.opendolphin.core.Dolphin;
 import org.opendolphin.core.PresentationModel;
 import org.opendolphin.core.Tag;
-
-import util.Veneer;
 
 /**
  * @author Dieter Holz

@@ -17,7 +17,7 @@ import org.opendolphin.core.Dolphin;
 import org.opendolphin.core.PresentationModel;
 import org.opendolphin.core.client.ClientDolphin;
 
-import utils.FXBindingMixin;
+import util.FXBindingMixin;
 
 import static myapp.MyAppCommands.CMD_CALL_MY_SERVICE;
 
