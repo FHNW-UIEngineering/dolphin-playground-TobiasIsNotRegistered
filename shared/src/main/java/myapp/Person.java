@@ -23,6 +23,7 @@ public class Person extends Veneer {
         return getPresentationModel().getAt(PersonPM.ATT.FIRSTNAME.name());
     }
 
+    // Make it a JavaFX Property - can be used for binding the attribute's value (and only the value)
     public Property<String> firstNameProperty() {
         return new AttributeWrapper<>(firstName());
     }
