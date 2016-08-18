@@ -21,6 +21,7 @@ public class DefaultCombinedDolphinProvider {
 
         BlindCommandBatcher commandBatcher = new BlindCommandBatcher();
         commandBatcher.setMergeValueChanges(true);
+        commandBatcher.setDeferMillis(200);
 
         InMemoryClientConnector clientConnector = new InMemoryClientConnector(clientDolphin, serverDolphin.getServerConnector(), commandBatcher);
         clientConnector.setSleepMillis(100);

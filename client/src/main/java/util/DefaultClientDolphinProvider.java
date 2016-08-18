@@ -18,6 +18,7 @@ public class DefaultClientDolphinProvider {
 
         BlindCommandBatcher commandBatcher = new BlindCommandBatcher();
         commandBatcher.setMergeValueChanges(true);
+        commandBatcher.setDeferMillis(200);
 
         HttpClientConnector connector = new HttpClientConnector(clientDolphin,
                                                                 commandBatcher,
