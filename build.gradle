@@ -7,6 +7,9 @@ mainClassName = 'myapp.MyCombinedStarter' // in-memory
 repositories {
     mavenCentral()
     mavenLocal()
+	maven {
+		url "https://ci.canoo.com/nexus/content/repositories/public-snapshots/"
+	}
 }
 
 subprojects {
@@ -14,6 +17,9 @@ subprojects {
     repositories {
         mavenCentral()
         mavenLocal()
+		maven {
+			url "https://ci.canoo.com/nexus/content/repositories/public-snapshots/"
+		}
     }
 }
 
