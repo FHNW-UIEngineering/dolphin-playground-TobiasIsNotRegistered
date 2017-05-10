@@ -8,21 +8,21 @@ public enum ValueType {
     STRING,
     FLOAT("%,.2f"),
     DOUBLE("%,.2f"),
-    INT("%,.2d"),
-    LONG("%,.2d"),
+    INT("%,d"),
+    LONG("%,2d"),
     BOOLEAN,
     FOREIGN_KEY("%.0d"),
     YEAR("%.0d"),
     ISO2_COUNTRY_CODE;
 
-    private String format;
+    private String formatPattern;
 
     ValueType(){
         this("s");
     }
 
-    ValueType(String format){
-        this.format = format;
+    ValueType(String formatPattern){
+        this.formatPattern = formatPattern;
     }
 
     public static boolean isNumber(ValueType type){
@@ -33,7 +33,7 @@ public enum ValueType {
         return ID.equals(type) || INT.equals(type) || LONG.equals(type) || YEAR.equals(type);
     }
 
-    public String format() {
-        return format;
+    public String formatPattern() {
+        return formatPattern;
     }
 }

@@ -3,19 +3,30 @@
 }
 
 .rootPane {
-    -fx-padding : 20;
-    -fx-spacing : 10;
+    -fx-padding : 10;
+    -fx-hgap: 10;
+    -fx-vgap: 10;
 }
 
 .heading {
-    -fx-font-family: 'DS-Digital';
-    -fx-font-size: 60;
+    -fx-font-family: 'Lato Light';
+    -fx-font-size: 72;
     -fx-background-color: linear-gradient(from 50% 0% to 50% 100%, rgb(33, 33, 33) 0%, rgb(66, 66, 66) 100%);
     -fx-text-fill: white;
-    -fx-max-width: 1024px;
+    -fx-max-height: 1024;
+    -fx-max-width: 1024;
 }
 
-.dirty {
+.text-field.dirty {
+    -fx-background-color: papayawhip;
+}
+
+.text-field.invalid {
+    -fx-text-fill: red;
+}
+
+.check-box.dirty > .box {
+    -fx-text-fill: red;
     -fx-background-color: papayawhip;
 }
 

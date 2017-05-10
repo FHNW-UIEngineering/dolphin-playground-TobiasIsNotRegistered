@@ -1,6 +1,6 @@
 package myapp.servlet;
 
-import myapp.service.impl.MyRemoteService;
+import myapp.service.impl.SomeRemoteService;
 import org.opendolphin.core.server.DefaultServerDolphin;
 import org.opendolphin.server.adapter.DolphinServlet;
 
@@ -10,6 +10,6 @@ public class MyAppServlet extends DolphinServlet {
 
 	@Override
 	protected void registerApplicationActions(DefaultServerDolphin serverDolphin) {
-		serverDolphin.register(new Reception(new MyRemoteService()));
+		serverDolphin.register(new Reception(new SomeRemoteService()));
 	}
 }

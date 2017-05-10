@@ -2,16 +2,14 @@ package myapp.controller;
 
 import java.util.List;
 
-import org.opendolphin.core.Attribute;
-import org.opendolphin.core.BasePresentationModel;
+import org.opendolphin.core.server.DTO;
 import org.opendolphin.core.server.ServerPresentationModel;
 import org.opendolphin.core.server.Slot;
 
 import myapp.presentationmodel.PMDescription;
 import myapp.presentationmodel.SpecialPMMixin;
 import myapp.presentationmodel.presentationstate.PresentationState;
-import myapp.presentationmodel.presentationstate.PresentationStateAtt;
-import myapp.util.Controller;
+import myapp.controller.util.Controller;
 import myapp.util.Language;
 
 /**
@@ -47,7 +45,7 @@ public class PresentationStateController extends Controller implements SpecialPM
 
         ServerPresentationModel presentationStatePM = createPM(PMDescription.PRESENTATION_STATE,
                                                                SpecialPMMixin.PRESENTATION_STATE_ID,
-                                                               createDTO(proxySlots));
+                                                               new DTO(proxySlots));
 
 
         PresentationState ps = new PresentationState(presentationStatePM);

@@ -1,4 +1,4 @@
-package myapp.util;
+package myapp.controller.util;
 
 import java.beans.PropertyChangeListener;
 import java.nio.charset.StandardCharsets;
@@ -26,6 +26,12 @@ import org.opendolphin.core.server.action.DolphinServerAction;
 import org.opendolphin.core.server.comm.ActionRegistry;
 
 import myapp.presentationmodel.PMDescription;
+import myapp.util.AdditionalTag;
+import myapp.util.AttributeDescription;
+import myapp.util.BasicCommands;
+import myapp.util.DolphinMixin;
+import myapp.util.Language;
+import myapp.util.ValueType;
 import myapp.util.veneer.PresentationModelVeneer;
 
 /**
@@ -58,7 +64,6 @@ public abstract class Controller extends DolphinServerAction implements DolphinM
     protected void setupBinding() {
     }
 
-
     private void initializeController() {
         setupModelStoreListener();
         setupValueChangedListener();
@@ -70,11 +75,15 @@ public abstract class Controller extends DolphinServerAction implements DolphinM
     private void rebaseAll() {
         Collection<ServerPresentationModel> allPMs = getServerDolphin().getServerModelStore().listPresentationModels();
         allPMs.forEach(ServerPresentationModel::rebase);
-
     }
 
     protected ServerPresentationModel createPM(String pmId, String pmType, DTO dto) {
         return getServerDolphin().presentationModel(pmId, pmType, dto);
+    }
+
+    protected ServerPresentationModel createPM(PMDescription type, DTO dto) {
+        long id = getEntityId(dto);
+        return createPM(type, id, dto);
     }
 
     protected ServerPresentationModel createPM(PMDescription type, long id, DTO dto) {
@@ -104,6 +113,10 @@ public abstract class Controller extends DolphinServerAction implements DolphinM
         dirtyModels(type, createdPMs).forEach(ServerPresentationModel::rebase);
     }
 
+    protected void reset(PMDescription type, List<Long> createdPMs) {
+        dirtyModels(type, createdPMs).forEach(ServerPresentationModel::reset);
+    }
+
     protected List<Slot> dirtyAttributes(PMDescription type, List<Long> createdPMs) {
         List<ServerPresentationModel> dirtyModels = dirtyModels(type, createdPMs);
 
@@ -120,7 +133,7 @@ public abstract class Controller extends DolphinServerAction implements DolphinM
     private List<ServerPresentationModel> dirtyModels(PMDescription type, List<Long> createdPMs) {
         return getServerDolphin().findAllPresentationModelsByType(type.getName())
                                  .stream()
-                                 .filter(pm -> pm.isDirty() || createdPMs.contains(entityId(pm.getId())))
+                                 .filter(pm -> pm.isDirty() || (createdPMs != null && createdPMs.contains(entityId(pm.getId()))))
                                  .collect(Collectors.toList());
     }
 
@@ -262,10 +275,6 @@ public abstract class Controller extends DolphinServerAction implements DolphinM
         });
 
         return slots;
-    }
-
-    protected DTO createDTO(List<Slot> slots) {
-        return new DTO(slots.toArray(new Slot[slots.size()]));
     }
 
     protected long getEntityId(DTO dto) {

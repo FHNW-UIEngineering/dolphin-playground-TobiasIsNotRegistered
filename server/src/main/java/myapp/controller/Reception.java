@@ -3,16 +3,16 @@ package myapp.controller;
 import org.opendolphin.core.server.action.DolphinServerAction;
 import org.opendolphin.core.server.comm.ActionRegistry;
 
-import myapp.service.MyService;
+import myapp.service.SomeService;
 
 /**
 	At the reception all controllers check in.
 */
 
 public class Reception extends DolphinServerAction {
-    private MyService myService;
+    private SomeService myService;
 
-    public Reception(MyService myService) {
+    public Reception(SomeService myService) {
         this.myService = myService;
     }
 

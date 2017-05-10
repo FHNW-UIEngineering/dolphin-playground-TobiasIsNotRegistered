@@ -4,7 +4,6 @@ import java.lang.ref.WeakReference;
 
 import java.util.Objects;
 
-import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 
 import org.opendolphin.core.Attribute;

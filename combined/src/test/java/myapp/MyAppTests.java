@@ -12,7 +12,7 @@ import org.opendolphin.core.comm.DefaultInMemoryConfig;
 import myapp.controller.Reception;
 import util.ClientDolphinMixin;
 
-import static myapp.presentationmodel.person.PersonCommands.CMD_CALL_MY_SERVICE;
+import static myapp.presentationmodel.person.PersonCommands.loadSomePerson;
 import static org.junit.Assert.assertEquals;
 
 public class MyAppTests implements ClientDolphinMixin {
@@ -53,7 +53,7 @@ public class MyAppTests implements ClientDolphinMixin {
         }));
 
 		// then calling the action changes the first name on the client
-		config.getClientDolphin().send(CMD_CALL_MY_SERVICE);
+		config.getClientDolphin().send(loadSomePerson);
 		assertEquals("ServerFirstName", clientPerson.getFirstName());
 	}
 
