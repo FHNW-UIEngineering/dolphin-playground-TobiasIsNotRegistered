@@ -3,6 +3,7 @@ package myapp.util.veneer;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
+import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 
 import org.opendolphin.core.PresentationModel;
@@ -23,20 +24,11 @@ public class FX_IntegerAttribute extends FX_Attribute {
         setUserFacingString(format(getValue()));
 
         userFacingStringProperty().addListener((observable, oldValue, newValue) -> {
-            if(isMandatory() && newValue == null || newValue.isEmpty()){
-                setValid(false);
-                setValidationMessage("mandatory");
-                return;
-            }
-
-            if(!INTEGER_PATTERN.matcher(newValue).matches()){
-                setValid(false);
-                setValidationMessage("not a number");
+            if(Platform.isFxApplicationThread()){
+                Platform.runLater(() -> reactToUserInput(newValue));
             }
             else {
-                setValid(true);
-                setValidationMessage(null);
-                setValue(Integer.parseInt(newValue.replaceAll("'", "")));
+                reactToUserInput(newValue);
             }
         });
 
@@ -48,6 +40,24 @@ public class FX_IntegerAttribute extends FX_Attribute {
 
     private String format(int value){
        return String.format(CH, FORMAT_PATTERN, value);
+    }
+
+    private void reactToUserInput(String userInput){
+        if(isMandatory() && userInput == null || userInput.isEmpty()){
+            setValid(false);
+            setValidationMessage("mandatory");
+            return;
+        }
+
+        if(!INTEGER_PATTERN.matcher(userInput).matches()){
+            setValid(false);
+            setValidationMessage("not a number");
+        }
+        else {
+            setValid(true);
+            setValidationMessage(null);
+            setValue(Integer.parseInt(userInput.replaceAll("'", "")));
+        }
     }
 
     public IntegerProperty valueProperty() {
