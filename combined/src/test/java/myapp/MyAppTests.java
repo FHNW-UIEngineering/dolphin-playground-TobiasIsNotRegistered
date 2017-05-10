@@ -8,9 +8,11 @@ import org.opendolphin.core.client.ClientPresentationModel;
 import org.opendolphin.core.client.comm.InMemoryClientConnector;
 import org.opendolphin.core.client.comm.SynchronousInMemoryClientConnector;
 import org.opendolphin.core.comm.DefaultInMemoryConfig;
+
+import myapp.controller.Reception;
 import util.ClientDolphinMixin;
 
-import static myapp.MyAppCommands.CMD_CALL_MY_SERVICE;
+import static myapp.presentationmodel.person.PersonCommands.CMD_CALL_MY_SERVICE;
 import static org.junit.Assert.assertEquals;
 
 public class MyAppTests implements ClientDolphinMixin {

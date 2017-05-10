@@ -9,46 +9,37 @@ import org.opendolphin.core.Dolphin;
 import org.opendolphin.core.client.ClientDolphin;
 import org.opendolphin.core.client.ClientPresentationModel;
 
+import myapp.presentationmodel.SpecialPMMixin;
+import myapp.util.BasicCommands;
 import util.ClientDolphinMixin;
 
 /**
  * The main view of MyApp.
  */
 
-public class MyAppView extends Application implements ClientDolphinMixin {
-    static  ClientDolphin clientDolphin;
+public class MyAppView extends Application implements ClientDolphinMixin, SpecialPMMixin {
+    static ClientDolphin clientDolphin;
 
-    private Person person;
+    @Override
+    public void start(Stage stage) throws Exception {
+        send(BasicCommands.INITIALIZE_BASE_PMS, $ -> {
+            buildUI(stage);
+            send(BasicCommands.INITIALIZE_CONTROLLER);
+        });
+    }
 
-	public MyAppView() {
-	}
+    private void buildUI(Stage stage) {
+        Pane root = new RootPane(clientDolphin);
+        Scene scene = new Scene(root);
 
-	@Override
-	public void init() throws Exception {
-		ClientPresentationModel pm = presentationModel(PersonPM.ID_4711, PersonPM.ATT.values());
+        stage.setScene(scene);
+        stage.titleProperty().bind(getPresentationState().applicationTitle.labelProperty());
 
-		person = new Person(pm);
-		person.setFirstName("");
+        stage.show();
+    }
 
-		pm.rebase();
-	}
-
-	@Override
-	public void start(Stage stage) throws Exception {
-		Pane root = new RootPane(clientDolphin, person);
-
-		Scene scene = new Scene(root);
-		scene.getStylesheets().add(MyAppView.class.getResource("/fonts/fonts.css").toExternalForm());
-		scene.getStylesheets().add(MyAppView.class.getResource("/myapp/myApp.css").toExternalForm());
-
-		stage.setScene(scene);
-		stage.setTitle(getClass().getName());
-
-		stage.show();
-	}
-
-	@Override
-	public Dolphin getDolphin() {
-		return clientDolphin;
-	}
+    @Override
+    public Dolphin getDolphin() {
+        return clientDolphin;
+    }
 }

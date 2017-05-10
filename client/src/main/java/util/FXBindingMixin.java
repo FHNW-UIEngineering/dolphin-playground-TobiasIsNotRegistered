@@ -10,6 +10,8 @@ import org.opendolphin.core.Dolphin;
 import org.opendolphin.core.PresentationModel;
 import org.opendolphin.core.Tag;
 
+import myapp.util.veneer.PresentationModelVeneer;
+
 /**
  * @author Dieter Holz
  */
@@ -39,7 +41,7 @@ public interface FXBindingMixin extends ClientDolphinMixin {
 		return new OfInterrelateAble(attributeName, tag);
 	}
 
-    default DirtyToPropertyAble bindDirtyStateOf(Veneer veneer){
+    default DirtyToPropertyAble bindDirtyStateOf(PresentationModelVeneer veneer){
 	    return new DirtyToPropertyAble(veneer.getPresentationModel());
     }
 
@@ -65,7 +67,11 @@ public interface FXBindingMixin extends ClientDolphinMixin {
    		public DirtyToPropertyAble convertedBy(Function<Boolean, Boolean> converter){
             return new DirtyToPropertyAble(pm, converter);
         }
-   	}
+
+        public DirtyToPropertyAble not() {
+            return convertedBy(b -> !b);
+        }
+    }
 
 	class OfAbleTerminal {
 		private final Property property;

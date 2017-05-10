@@ -1,12 +1,12 @@
-package myapp;
+package myapp.presentationmodel.person;
 
 /**
  * @author Dieter Holz
  */
-public interface MyAppCommands {
+public interface PersonCommands {
 	String CMD_CALL_MY_SERVICE = unique("CallMyService");
 
 	static String unique(String key) {
-		return MyAppCommands.class.getName() + "." + key;
+		return PersonCommands.class.getName() + "." + key;
 	}
 }

@@ -1,10 +1,10 @@
 package myapp.servlet;
 
-import myapp.MyRemoteService;
+import myapp.service.impl.MyRemoteService;
 import org.opendolphin.core.server.DefaultServerDolphin;
 import org.opendolphin.server.adapter.DolphinServlet;
 
-import myapp.Reception;
+import myapp.controller.Reception;
 
 public class MyAppServlet extends DolphinServlet {
 

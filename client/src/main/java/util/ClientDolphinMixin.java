@@ -5,6 +5,8 @@ import org.opendolphin.core.client.ClientDolphin;
 import org.opendolphin.core.client.ClientPresentationModel;
 import org.opendolphin.core.client.comm.OnFinishedHandler;
 
+import myapp.util.DolphinMixin;
+
 /**
  * @author Dieter Holz
  */
