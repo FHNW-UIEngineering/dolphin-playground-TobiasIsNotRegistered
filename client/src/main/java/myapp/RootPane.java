@@ -39,7 +39,7 @@ class RootPane extends GridPane implements ViewMixin, FXBindingMixin, SpecialPMM
 
     private final ClientDolphin clientDolphin;
 
-    private Label     headerLabel;
+    private Label headerLabel;
 
     private Label idLabel;
     private Label idField;
@@ -74,7 +74,6 @@ class RootPane extends GridPane implements ViewMixin, FXBindingMixin, SpecialPMM
     public Dolphin getDolphin() {
         return clientDolphin;
     }
-
 
     @Override
     public void initializeSelf() {
@@ -139,40 +138,40 @@ class RootPane extends GridPane implements ViewMixin, FXBindingMixin, SpecialPMM
 
     @Override
     public void setupValueChangedListeners() {
+        personProxy.name.dirtyProperty().addListener((observable, oldValue, newValue) -> updateStyle(nameField, DIRTY_STYLE, newValue));
+        personProxy.age.dirtyProperty().addListener((observable, oldValue, newValue) -> updateStyle(ageField, DIRTY_STYLE, newValue));
+        personProxy.isAdult.dirtyProperty().addListener((observable, oldValue, newValue) -> updateStyle(isAdultCheckBox, DIRTY_STYLE, newValue));
 
-        Person person = getPersonProxy();
+        personProxy.name.validProperty().addListener((observable, oldValue, newValue) -> updateStyle(nameField, INVALID_STYLE, !newValue));
+        personProxy.age.validProperty().addListener((observable, oldValue, newValue) -> updateStyle(ageField, INVALID_STYLE, !newValue));
+        personProxy.isAdult.validProperty().addListener((observable, oldValue, newValue) -> updateStyle(isAdultCheckBox, INVALID_STYLE, !newValue));
 
-        person.name.dirtyProperty().addListener((observable, oldValue, newValue) -> updateStyle(nameField, DIRTY_STYLE, newValue));
-        person.age.dirtyProperty().addListener((observable, oldValue, newValue) -> updateStyle(ageField, DIRTY_STYLE, newValue));
-        person.isAdult.dirtyProperty().addListener((observable, oldValue, newValue) -> updateStyle(isAdultCheckBox, DIRTY_STYLE, newValue));
-
-        person.name.validProperty().addListener((observable, oldValue, newValue) -> updateStyle(nameField, INVALID_STYLE, !newValue));
-        person.age.validProperty().addListener((observable, oldValue, newValue) -> updateStyle(ageField, INVALID_STYLE, !newValue));
-        person.isAdult.validProperty().addListener((observable, oldValue, newValue) -> updateStyle(isAdultCheckBox, INVALID_STYLE, !newValue));
-
-        person.name.mandatoryProperty().addListener((observable, oldValue, newValue) -> updateStyle(nameField, MANDATORY_STYLE, newValue));
-        person.age.mandatoryProperty().addListener((observable, oldValue, newValue) -> updateStyle(ageField, MANDATORY_STYLE, newValue));
-        person.isAdult.mandatoryProperty().addListener((observable, oldValue, newValue) -> updateStyle(isAdultCheckBox, MANDATORY_STYLE, newValue));
+        personProxy.name.mandatoryProperty().addListener((observable, oldValue, newValue) -> updateStyle(nameField, MANDATORY_STYLE, newValue));
+        personProxy.age.mandatoryProperty().addListener((observable, oldValue, newValue) -> updateStyle(ageField, MANDATORY_STYLE, newValue));
+        personProxy.isAdult.mandatoryProperty().addListener((observable, oldValue, newValue) -> updateStyle(isAdultCheckBox, MANDATORY_STYLE, newValue));
     }
 
 
     @Override
     public void setupBindings() {
-
         headerLabel.textProperty().bind(personProxy.name.valueProperty().concat(", ").concat(personProxy.age.valueProperty()));
 
         idLabel.textProperty().bind(personProxy.id.labelProperty());
         idField.textProperty().bind(personProxy.id.valueProperty().asString());
 
-        setupBinding(nameLabel, nameField, personProxy.name);
-        setupBinding(ageLabel, ageField, personProxy.age);
+        setupBinding(nameLabel   , nameField      , personProxy.name);
+        setupBinding(ageLabel    , ageField       , personProxy.age);
         setupBinding(isAdultLabel, isAdultCheckBox, personProxy.isAdult);
 
         germanButton.disableProperty().bind(Bindings.createBooleanBinding(() -> Language.GERMAN.equals(ps.language.getValue()), ps.language.valueProperty()));
         englishButton.disableProperty().bind(Bindings.createBooleanBinding(() -> Language.ENGLISH.equals(ps.language.getValue()), ps.language.valueProperty()));
 
-        bindDirtyStateOf(personProxy).not().to(saveButton.disableProperty());
-        bindDirtyStateOf(personProxy).not().to(resetButton.disableProperty());
+        saveButton.disableProperty().bind(personProxy.dirtyProperty().not());
+        resetButton.disableProperty().bind(personProxy.dirtyProperty().not());
+
+
+//        bindDirtyStateOf(personProxy).not().to(saveButton.disableProperty());
+//        bindDirtyStateOf(personProxy).not().to(resetButton.disableProperty());
     }
 
     private void setupBinding(Label label, FX_Attribute attribute){
