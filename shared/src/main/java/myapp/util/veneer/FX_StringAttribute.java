@@ -9,13 +9,23 @@ import myapp.util.AttributeDescription;
 /**
  * @author Dieter Holz
  */
-public class FX_StringAttribute extends FX_Attribute {
+public class FX_StringAttribute extends FX_Attribute<StringProperty, String> {
+    private static final String REGEX = ".*";
+
     public FX_StringAttribute(PresentationModel pm, AttributeDescription attributeDescription) {
-        super(pm, attributeDescription);
+        super(pm, attributeDescription,
+              REGEX,
+              new StringAttributeAdapter(valueAttribute(pm, attributeDescription)));
     }
 
-    public StringProperty valueProperty() {
-        return new StringAttributeAdapter(getValueAttribute());
+    @Override
+    protected String format(String value) {
+        return value;
+    }
+
+    @Override
+    protected String convertToValue(String string) {
+        return string;
     }
 
     public String getValue(){

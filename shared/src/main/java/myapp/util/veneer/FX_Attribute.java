@@ -1,6 +1,11 @@
 package myapp.util.veneer;
 
+import java.util.Locale;
+import java.util.regex.Pattern;
+
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.Property;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.StringProperty;
 
@@ -14,9 +19,11 @@ import myapp.util.AttributeDescription;
 /**
  * @author Dieter Holz
  */
-abstract class FX_Attribute {
-    private final Attribute valueAttribute;
+public abstract class FX_Attribute<PropertyType extends Property<ValueType>, ValueType> {
+    protected static final Locale DEFAULT_LOCALE = new Locale("de", "CH");
+    private static final String MANDATORY_MESSAGE = "Mandatory field";
 
+    private final PropertyType            value;
     private final StringProperty          label;
     private final BooleanProperty         mandatory;
     private final BooleanProperty         readOnly;
@@ -25,20 +32,64 @@ abstract class FX_Attribute {
     private final ReadOnlyBooleanProperty dirty;
     private final StringProperty          userFacingString;
 
-    public FX_Attribute(PresentationModel pm, AttributeDescription attributeDescription) {
-        this.valueAttribute = pm.getAt(attributeDescription.name());
+    private final Pattern syntaxPattern;
 
+    protected FX_Attribute(PresentationModel pm, AttributeDescription attributeDescription, String syntaxPattern, PropertyType dolphinValueAttributeAdapter) {
+        this.syntaxPattern  = Pattern.compile(syntaxPattern);
+
+        value             = dolphinValueAttributeAdapter;
         label             = new StringAttributeAdapter(pm.getAt(attributeDescription.name(), Tag.LABEL));
         mandatory         = new BooleanAttributeAdapter(pm.getAt(attributeDescription.name(), Tag.MANDATORY));
         readOnly          = new BooleanAttributeAdapter(pm.getAt(attributeDescription.name(), AdditionalTag.READ_ONLY));
         valid             = new BooleanAttributeAdapter(pm.getAt(attributeDescription.name(), AdditionalTag.VALID));
         validationMessage = new StringAttributeAdapter(pm.getAt(attributeDescription.name(), AdditionalTag.VALIDATION_MESSAGE));
-        dirty             = new DirtyPropertyAdapter(pm.getAt(attributeDescription.name()));
+        dirty             = new DirtyPropertyAdapter(valueAttribute(pm, attributeDescription));
         userFacingString  = new StringAttributeAdapter(pm.getAt(attributeDescription.name(), AdditionalTag.USER_FACING_STRING));
+
+        setUserFacingString(format(valueProperty().getValue()));
+
+        userFacingStringProperty().addListener((observable, oldValue, newValue) -> {
+            if(Platform.isFxApplicationThread()){
+                Platform.runLater(() -> reactToUserInput(newValue));
+            }
+            else {
+                reactToUserInput(newValue);
+            }
+        });
+
+        valueProperty().addListener((observable, oldValue, newValue) -> {
+            setUserFacingString(format(newValue));
+        });
     }
 
-    protected Attribute getValueAttribute() {
-        return valueAttribute;
+    protected static Attribute valueAttribute(PresentationModel pm, AttributeDescription attributeDescription) {
+        return pm.getAt(attributeDescription.name());
+    }
+
+    protected abstract String format(ValueType value);
+
+    protected abstract ValueType convertToValue(String string);
+
+
+    private void reactToUserInput(String userInput) {
+        if (isMandatory() && (userInput == null || userInput.isEmpty())) {
+            setValid(false);
+            setValidationMessage(MANDATORY_MESSAGE);
+            return;
+        }
+
+        if (!syntaxPattern.matcher(userInput).matches()) {
+            setValid(false);
+            setValidationMessage("doesn't match '" + syntaxPattern.pattern() + "'");
+        } else {
+            setValid(true);
+            setValidationMessage("OK!");
+            valueProperty().setValue(convertToValue(userInput));
+        }
+    }
+
+    public PropertyType valueProperty(){
+        return value;
     }
 
     public String getLabel() {

@@ -17,12 +17,22 @@
     -fx-max-width: 1024;
 }
 
-.text-field.dirty {
+.text-field.dirty{
     -fx-background-color: papayawhip;
+}
+
+.text-field.dirty.mandatory{
+    -fx-background-color: yellowgreen, papayawhip;
+    -fx-background-insets: 0, 2;
 }
 
 .text-field.invalid {
     -fx-text-fill: red;
+}
+
+.text-field.mandatory {
+    -fx-background-color: yellowgreen, white;
+    -fx-background-insets: 0, 2;
 }
 
 .check-box.dirty > .box {
