@@ -1,4 +1,4 @@
-package util;
+package myapp.util;
 
 import org.opendolphin.core.client.ClientAttribute;
 import org.opendolphin.core.client.ClientDolphin;

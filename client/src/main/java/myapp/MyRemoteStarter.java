@@ -2,7 +2,7 @@ package myapp;
 
 import javafx.application.Application;
 
-import util.DefaultClientDolphinProvider;
+import myapp.util.DefaultClientDolphinProvider;
 
 /**
  * Starts a JavaFX client locally that connects to the remote application, which runs on the server.

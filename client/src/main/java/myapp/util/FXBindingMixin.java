@@ -1,4 +1,4 @@
-package util;
+package myapp.util;
 
 import java.util.function.Function;
 

@@ -22,8 +22,8 @@ import myapp.presentationmodel.presentationstate.PresentationState;
 import myapp.util.Language;
 import myapp.util.veneer.FX_Attribute;
 import myapp.util.veneer.FX_BooleanAttribute;
-import util.FXBindingMixin;
-import util.ViewMixin;
+import myapp.util.FXBindingMixin;
+import myapp.util.ViewMixin;
 
 /**
  * Implementation of the view details, event handling, and binding.

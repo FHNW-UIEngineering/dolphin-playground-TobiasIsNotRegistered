@@ -11,7 +11,7 @@ import org.opendolphin.core.client.ClientDolphin;
 import myapp.presentationmodel.SpecialPMMixin;
 import myapp.presentationmodel.person.PersonCommands;
 import myapp.util.BasicCommands;
-import util.ClientDolphinMixin;
+import myapp.util.ClientDolphinMixin;
 
 /**
  * The main view of MyApp.

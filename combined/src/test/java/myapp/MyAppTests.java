@@ -10,7 +10,7 @@ import org.opendolphin.core.client.comm.SynchronousInMemoryClientConnector;
 import org.opendolphin.core.comm.DefaultInMemoryConfig;
 
 import myapp.controller.Reception;
-import util.ClientDolphinMixin;
+import myapp.util.ClientDolphinMixin;
 
 import static myapp.presentationmodel.person.PersonCommands.loadSomePerson;
 import static org.junit.Assert.assertEquals;
