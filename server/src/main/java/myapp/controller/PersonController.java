@@ -2,8 +2,6 @@ package myapp.controller;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.opendolphin.core.Dolphin;
 import org.opendolphin.core.server.DTO;
@@ -25,12 +23,12 @@ import myapp.service.SomeService;
  * <p>
  * Todo: Replace this with your Controller
  */
-public class PersonController extends Controller implements SpecialPMMixin {
+class PersonController extends Controller implements SpecialPMMixin {
 
     private final SomeService service;
     private       Person      personProxy;
 
-    public PersonController(SomeService service) {
+    PersonController(SomeService service) {
         this.service = service;
     }
 
@@ -38,27 +36,14 @@ public class PersonController extends Controller implements SpecialPMMixin {
     public void registerIn(ActionRegistry actionRegistry) {
         super.registerIn(actionRegistry);
         actionRegistry.register(PersonCommands.LOAD_SOME_PERSON, (command, response) -> loadPerson());
-        actionRegistry.register(PersonCommands.SAVE, (command, response) -> save());
-        actionRegistry.register(PersonCommands.RESET, (command, response) -> reset(PMDescription.PERSON, Collections.emptyList()));
-    }
-
-    private void save() {
-        List<Slot> dirtySlots = dirtyAttributes(PMDescription.PERSON, Collections.emptyList());
-        Map<Long, List<Slot>> map = dirtySlots.stream().collect(Collectors.groupingBy(slot -> entityId(slot.getQualifier())));
-        List<DTO> dtos = map.values().stream().map(slots -> new DTO(slots)).collect(Collectors.toList());
-        service.save(dtos);
-        rebase(PMDescription.PERSON, Collections.emptyList());
-    }
-
-    private void loadPerson() {
-        DTO dto = service.loadSomeEntity();
-        ServerPresentationModel pm = createPM(PMDescription.PERSON, dto);
-        personProxy.getPresentationModel().syncWith(pm);
+        actionRegistry.register(PersonCommands.SAVE            , (command, response) -> save());
+        actionRegistry.register(PersonCommands.RESET           , (command, response) -> reset(PMDescription.PERSON, Collections.emptyList()));
     }
 
     @Override
     protected void initializeBasePMs() {
-        List<Slot>              proxySlots = createProxySlots(PMDescription.PERSON);
+        List<Slot> proxySlots = createProxySlots(PMDescription.PERSON);
+
         ServerPresentationModel pm = createPM(PERSON_PROXY_PM_ID,
                                               "Proxy:" + PMDescription.PERSON.getName(),
                                               new DTO(proxySlots));
@@ -78,7 +63,21 @@ public class PersonController extends Controller implements SpecialPMMixin {
         getPresentationState().language.valueProperty().addListener((observable, oldValue, newValue) -> {
             translate(personProxy, newValue);
         });
+    }
 
+    ServerPresentationModel loadPerson() {
+        DTO dto = service.loadSomeEntity();
+        ServerPresentationModel pm = createPM(PMDescription.PERSON, dto);
+
+        personProxy.getPresentationModel().syncWith(pm);
+
+        return pm;
+    }
+
+    void save() {
+        List<DTO> dtos = dirtyDTOs(PMDescription.PERSON, Collections.emptyList());
+        service.save(dtos);
+        rebase(PMDescription.PERSON, Collections.emptyList());
     }
 
     @Override

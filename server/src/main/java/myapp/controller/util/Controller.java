@@ -6,13 +6,16 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.NoSuchElementException;
 import java.util.ResourceBundle;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.opendolphin.core.Attribute;
 import org.opendolphin.core.Dolphin;
@@ -54,7 +57,6 @@ public abstract class Controller extends DolphinServerAction implements DolphinM
     protected void setDefaultValues() {
     }
 
-
     protected void setupModelStoreListener() {
     }
 
@@ -77,20 +79,20 @@ public abstract class Controller extends DolphinServerAction implements DolphinM
         allPMs.forEach(ServerPresentationModel::rebase);
     }
 
-    protected ServerPresentationModel createPM(String pmId, String pmType, DTO dto) {
+    public ServerPresentationModel createPM(String pmId, String pmType, DTO dto) {
         return getServerDolphin().presentationModel(pmId, pmType, dto);
     }
 
-    protected ServerPresentationModel createPM(PMDescription type, DTO dto) {
+    public ServerPresentationModel createPM(PMDescription type, DTO dto) {
         long id = getEntityId(dto);
         return createPM(type, id, dto);
     }
 
-    protected ServerPresentationModel createPM(PMDescription type, long id, DTO dto) {
+    public ServerPresentationModel createPM(PMDescription type, long id, DTO dto) {
         return getServerDolphin().presentationModel(type.pmId(id), type.getName(), dto);
     }
 
-    protected ServerPresentationModel createEmptyPM(PMDescription type, long id) {
+    public ServerPresentationModel createEmptyPM(PMDescription type, long id) {
         String                 pmId       = type.pmId(id);
         String                 entityType = type.getEntityName();
         AttributeDescription[] attr       = type.getAttributeDescriptions();
@@ -128,6 +130,21 @@ public abstract class Controller extends DolphinServerAction implements DolphinM
                                                att.getQualifier()))
                           .collect(Collectors.toList());
 
+    }
+
+    protected List<DTO> dirtyDTOs(PMDescription type, List<Long> createdPMs) {
+        List<ServerPresentationModel> dirtyPMs = dirtyModels(type, createdPMs);
+
+        return dirtyPMs.stream()
+                       .map(pm -> pm.getAttributes().stream()
+                                    .filter(attribute -> attribute.isDirty() || createdPMs.contains(
+                                            entityId(attribute.getPresentationModel().getId())))
+                                    .map(att -> new Slot(att.getPropertyName(),
+                                                         att.getValue(),
+                                                         att.getQualifier()))
+                                    .collect(Collectors.toList()))
+                       .map(DTO::new)
+                       .collect(Collectors.toList());
     }
 
     private List<ServerPresentationModel> dirtyModels(PMDescription type, List<Long> createdPMs) {
@@ -315,16 +332,16 @@ public abstract class Controller extends DolphinServerAction implements DolphinM
                   });
     }
 
-    protected void translate(PresentationModelVeneer veneer, Language language){
+    protected void translate(PresentationModelVeneer veneer, Language language) {
         translate(veneer.getPresentationModel(), language);
     }
 
-    protected void translate(Attribute attribute, Language language){
+    protected void translate(Attribute attribute, Language language) {
         ResourceBundle bundle = getResourceBundle(attribute.getPresentationModel(), language);
         attribute.setValue(translate(bundle, attribute.getPropertyName()));
     }
 
-    private ResourceBundle getResourceBundle(PresentationModel pm, Language language){
+    private ResourceBundle getResourceBundle(PresentationModel pm, Language language) {
         Locale locale = Language.ENGLISH.equals(language) ? Locale.ENGLISH : Locale.GERMAN;
 
         String type      = pm.getPresentationModelType();
