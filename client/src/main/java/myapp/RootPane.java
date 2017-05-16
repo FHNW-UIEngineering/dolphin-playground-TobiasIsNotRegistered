@@ -12,30 +12,39 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 
+import org.opendolphin.binding.Converter;
+import org.opendolphin.binding.JFXBinder;
+import org.opendolphin.core.Attribute;
 import org.opendolphin.core.Dolphin;
+import org.opendolphin.core.PresentationModel;
+import org.opendolphin.core.Tag;
 import org.opendolphin.core.client.ClientDolphin;
+import org.opendolphin.core.client.ClientPresentationModel;
 
 import myapp.presentationmodel.SpecialPMMixin;
 import myapp.presentationmodel.person.Person;
+import myapp.presentationmodel.person.PersonAtt;
 import myapp.presentationmodel.person.PersonCommands;
 import myapp.presentationmodel.presentationstate.PresentationState;
+import myapp.presentationmodel.presentationstate.PresentationStateAtt;
+import myapp.util.AdditionalTag;
 import myapp.util.Language;
+import myapp.util.ViewMixin;
 import myapp.util.veneer.FX_Attribute;
 import myapp.util.veneer.FX_BooleanAttribute;
-import myapp.util.FXBindingMixin;
-import myapp.util.ViewMixin;
 
 /**
  * Implementation of the view details, event handling, and binding.
  *
  * @author Dieter Holz
+ *
+ * todo : Replace it with your application UI
  */
-class RootPane extends GridPane implements ViewMixin, FXBindingMixin, SpecialPMMixin {
+class RootPane extends GridPane implements ViewMixin, SpecialPMMixin {
 
-    private static final String DIRTY_STYLE = "dirty";
-    private static final String INVALID_STYLE = "invalid";
+    private static final String DIRTY_STYLE     = "dirty";
+    private static final String INVALID_STYLE   = "invalid";
     private static final String MANDATORY_STYLE = "mandatory";
-
 
     private final ClientDolphin clientDolphin;
 
@@ -127,10 +136,13 @@ class RootPane extends GridPane implements ViewMixin, FXBindingMixin, SpecialPMM
 
     @Override
     public void setupEventHandlers() {
+        // all events either send a command (needs to be registered in a controller on the server side)
+        // or set a value on an Attribute
+
         PresentationState ps = getPresentationState();
-        saveButton.setOnAction(   $ -> send(PersonCommands.SAVE));
-        resetButton.setOnAction(  $ -> send(PersonCommands.RESET));
-        nextButton.setOnAction(   $ -> send(PersonCommands.LOAD_SOME_PERSON));
+        saveButton.setOnAction(   $ -> clientDolphin.send(PersonCommands.SAVE));
+        resetButton.setOnAction(  $ -> clientDolphin.send(PersonCommands.RESET));
+        nextButton.setOnAction(   $ -> clientDolphin.send(PersonCommands.LOAD_SOME_PERSON));
 
         germanButton.setOnAction( $ -> ps.language.setValue(Language.GERMAN));
         englishButton.setOnAction($ -> ps.language.setValue(Language.ENGLISH));
@@ -138,22 +150,78 @@ class RootPane extends GridPane implements ViewMixin, FXBindingMixin, SpecialPMM
 
     @Override
     public void setupValueChangedListeners() {
-        personProxy.name.dirtyProperty().addListener((observable, oldValue, newValue) -> updateStyle(nameField, DIRTY_STYLE, newValue));
-        personProxy.age.dirtyProperty().addListener((observable, oldValue, newValue) -> updateStyle(ageField, DIRTY_STYLE, newValue));
+        personProxy.name.dirtyProperty().addListener((observable, oldValue, newValue)    -> updateStyle(nameField      , DIRTY_STYLE, newValue));
+        personProxy.age.dirtyProperty().addListener((observable, oldValue, newValue)     -> updateStyle(ageField       , DIRTY_STYLE, newValue));
         personProxy.isAdult.dirtyProperty().addListener((observable, oldValue, newValue) -> updateStyle(isAdultCheckBox, DIRTY_STYLE, newValue));
 
-        personProxy.name.validProperty().addListener((observable, oldValue, newValue) -> updateStyle(nameField, INVALID_STYLE, !newValue));
-        personProxy.age.validProperty().addListener((observable, oldValue, newValue) -> updateStyle(ageField, INVALID_STYLE, !newValue));
+        personProxy.name.validProperty().addListener((observable, oldValue, newValue)    -> updateStyle(nameField      , INVALID_STYLE, !newValue));
+        personProxy.age.validProperty().addListener((observable, oldValue, newValue)     -> updateStyle(ageField       , INVALID_STYLE, !newValue));
         personProxy.isAdult.validProperty().addListener((observable, oldValue, newValue) -> updateStyle(isAdultCheckBox, INVALID_STYLE, !newValue));
 
-        personProxy.name.mandatoryProperty().addListener((observable, oldValue, newValue) -> updateStyle(nameField, MANDATORY_STYLE, newValue));
-        personProxy.age.mandatoryProperty().addListener((observable, oldValue, newValue) -> updateStyle(ageField, MANDATORY_STYLE, newValue));
+        personProxy.name.mandatoryProperty().addListener((observable, oldValue, newValue)    -> updateStyle(nameField      , MANDATORY_STYLE, newValue));
+        personProxy.age.mandatoryProperty().addListener((observable, oldValue, newValue)     -> updateStyle(ageField       , MANDATORY_STYLE, newValue));
         personProxy.isAdult.mandatoryProperty().addListener((observable, oldValue, newValue) -> updateStyle(isAdultCheckBox, MANDATORY_STYLE, newValue));
     }
 
-
     @Override
     public void setupBindings() {
+        setupBindings_DolphinBased();
+        //setupBindings_VeneerBased();
+    }
+
+    private void setupBindings_DolphinBased() {
+        // you can fetch all existing PMs from the modelstore via clientDolphin
+        ClientPresentationModel personPM = clientDolphin.getAt(SpecialPMMixin.PERSON_PROXY_PM_ID);
+
+        //JFXBinder is ui toolkit agnostic. We have to use Strings
+        JFXBinder.bind(PersonAtt.NAME.name())
+                 .of(personPM)
+                 .using(value -> value + ", " + personPM.getAt(PersonAtt.AGE.name()).getValue())
+                 .to("text")
+                 .of(headerLabel);
+
+        JFXBinder.bind(PersonAtt.AGE.name())
+                 .of(personPM)
+                 .using(value -> personPM.getAt(PersonAtt.NAME.name()).getValue() + ", " + value)
+                 .to("text")
+                 .of(headerLabel);
+
+        JFXBinder.bind(PersonAtt.NAME.name(), Tag.LABEL).of(personPM).to("text").of(nameLabel);
+        JFXBinder.bind(PersonAtt.NAME.name()).of(personPM).to("text").of(nameField);
+        JFXBinder.bind("text").of(nameField).to(PersonAtt.NAME.name()).of(personPM);
+
+        JFXBinder.bind(PersonAtt.AGE.name(), Tag.LABEL).of(personPM).to("text").of(ageLabel);
+        JFXBinder.bind(PersonAtt.AGE.name()).of(personPM).to("text").of(ageField);
+        Converter toIntConverter = value -> {
+            try {
+                int newValue = Integer.parseInt(value.toString());
+                personPM.getAt(PersonAtt.AGE.name(), AdditionalTag.VALID).setValue(true);
+                personPM.getAt(PersonAtt.AGE.name(), AdditionalTag.VALIDATION_MESSAGE).setValue("OK");
+
+                return newValue;
+            } catch (NumberFormatException e) {
+                personPM.getAt(PersonAtt.AGE.name(), AdditionalTag.VALID).setValue(false);
+                personPM.getAt(PersonAtt.AGE.name(), AdditionalTag.VALIDATION_MESSAGE).setValue("Not a number");
+                return personPM.getAt(PersonAtt.AGE.name()).getValue();
+            }
+        };
+        JFXBinder.bind("text").of(ageField).using(toIntConverter).to(PersonAtt.AGE.name()).of(personPM);
+
+        JFXBinder.bind(PersonAtt.IS_ADULT.name(), Tag.LABEL).of(personPM).to("text").of(isAdultLabel);
+        JFXBinder.bind(PersonAtt.IS_ADULT.name()).of(personPM).to("selected").of(isAdultCheckBox);
+        JFXBinder.bind("selected").of(isAdultCheckBox).to(PersonAtt.IS_ADULT.name()).of(personPM);
+
+        Converter not = value -> !(boolean) value;
+        JFXBinder.bindInfo(Attribute.DIRTY_PROPERTY).of(personPM).using(not).to("disable").of(saveButton);
+        JFXBinder.bindInfo(Attribute.DIRTY_PROPERTY).of(personPM).using(not).to("disable").of(resetButton);
+
+        PresentationModel ps = getPresentationStatePM();
+
+        JFXBinder.bind(PresentationStateAtt.LANGUAGE.name()).of(ps).using(value -> value.equals(Language.GERMAN.name())).to("disable").of(germanButton);
+        JFXBinder.bind(PresentationStateAtt.LANGUAGE.name()).of(ps).using(value -> value.equals(Language.ENGLISH.name())).to("disable").of(englishButton);
+    }
+
+    private void setupBindings_VeneerBased(){
         headerLabel.textProperty().bind(personProxy.name.valueProperty().concat(", ").concat(personProxy.age.valueProperty()));
 
         idLabel.textProperty().bind(personProxy.id.labelProperty());
@@ -168,16 +236,6 @@ class RootPane extends GridPane implements ViewMixin, FXBindingMixin, SpecialPMM
 
         saveButton.disableProperty().bind(personProxy.dirtyProperty().not());
         resetButton.disableProperty().bind(personProxy.dirtyProperty().not());
-
-
-//        bindDirtyStateOf(personProxy).not().to(saveButton.disableProperty());
-//        bindDirtyStateOf(personProxy).not().to(resetButton.disableProperty());
-    }
-
-    private void setupBinding(Label label, FX_Attribute attribute){
-        label.textProperty().bind(Bindings.createStringBinding(() -> attribute.getLabel() + (attribute.isMandatory() ? " *" : "  "),
-                                                               attribute.labelProperty(),
-                                                               attribute.mandatoryProperty()));
     }
 
     private void setupBinding(Label label, TextField field, FX_Attribute attribute) {
@@ -194,30 +252,11 @@ class RootPane extends GridPane implements ViewMixin, FXBindingMixin, SpecialPMM
         checkBox.selectedProperty().bindBidirectional(attribute.valueProperty());
     }
 
-//    private void setupBinding() {
-//        // use JavaFX binding via the 'nameProperty'
-//        // this is applicable for the value of an attribute only
-//        headerLabel.textProperty().bind(personProxy.firstNameProperty());
-//        nameField.textProperty().bindBidirectional(personProxy.firstNameProperty());
-//
-//        // use FXBindingMixin for bidirectional binding via the 'firstName attribute'
-//        interrelate(personProxy.firstName()).with(ageField.textProperty());
-//
-//        // use FXBindingMixin for binding the dirty state of a veneer
-//        bindDirtyStateOf(personProxy).convertedBy(b -> !b).to(saveButton.disableProperty());
-//
-//        // the Open-Dolphin way of binding (there should always be a more convenient way provided by FXBindingMixin)
-//        PresentationModel pm = personProxy.getPresentationModel();
-//
-//        Converter inv = new Converter<Boolean, Boolean>() {
-//            @Override
-//            public Boolean convert(Boolean value) {
-//                return !value;
-//            }
-//        };
-//
-//        JFXBinder.bindInfo(Attribute.DIRTY_PROPERTY).of(pm).using(inv).to("disabled").of(resetButton);
-//    }
+    private void setupBinding(Label label, FX_Attribute attribute){
+        label.textProperty().bind(Bindings.createStringBinding(() -> attribute.getLabel() + (attribute.isMandatory() ? " *" : "  "),
+                                                               attribute.labelProperty(),
+                                                               attribute.mandatoryProperty()));
+    }
 
     private void updateStyle(Node node, String style, boolean value){
         if(value){

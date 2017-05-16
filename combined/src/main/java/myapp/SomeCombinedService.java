@@ -5,10 +5,9 @@ import java.util.Random;
 
 import org.opendolphin.core.server.DTO;
 
-import myapp.presentationmodel.PMDescription;
 import myapp.presentationmodel.person.PersonAtt;
 import myapp.service.SomeService;
-import myapp.service.util.DTOMixin;
+import myapp.util.DTOMixin;
 
 public class SomeCombinedService implements SomeService, DTOMixin {
 

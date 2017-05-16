@@ -29,6 +29,5 @@ public class DefaultClientDolphinProvider {
         clientDolphin.setClientConnector(connector);
 
         return clientDolphin;
-
     }
 }

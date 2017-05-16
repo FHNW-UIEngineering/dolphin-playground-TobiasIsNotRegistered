@@ -1,25 +1,19 @@
-package myapp.controller.util;
+package myapp.util;
 
-import java.beans.PropertyChangeListener;
 import java.nio.charset.StandardCharsets;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.NoSuchElementException;
 import java.util.ResourceBundle;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.opendolphin.core.Attribute;
 import org.opendolphin.core.Dolphin;
-import org.opendolphin.core.ModelStoreEvent;
 import org.opendolphin.core.PresentationModel;
 import org.opendolphin.core.Tag;
 import org.opendolphin.core.server.DTO;
@@ -29,18 +23,13 @@ import org.opendolphin.core.server.action.DolphinServerAction;
 import org.opendolphin.core.server.comm.ActionRegistry;
 
 import myapp.presentationmodel.PMDescription;
-import myapp.util.AdditionalTag;
-import myapp.util.AttributeDescription;
-import myapp.util.BasicCommands;
-import myapp.util.DolphinMixin;
-import myapp.util.Language;
-import myapp.util.ValueType;
+
 import myapp.util.veneer.PresentationModelVeneer;
 
 /**
  * @author Dieter Holz
  */
-public abstract class Controller extends DolphinServerAction implements DolphinMixin {
+public abstract class Controller extends DolphinServerAction implements DolphinMixin, DTOMixin {
     @Override
     public Dolphin getDolphin() {
         return getServerDolphin();
@@ -79,36 +68,26 @@ public abstract class Controller extends DolphinServerAction implements DolphinM
         allPMs.forEach(ServerPresentationModel::rebase);
     }
 
-    public ServerPresentationModel createPM(String pmId, String pmType, DTO dto) {
+    protected ServerPresentationModel createPM(String pmId, String pmType, DTO dto) {
         return getServerDolphin().presentationModel(pmId, pmType, dto);
     }
 
-    public ServerPresentationModel createPM(PMDescription type, DTO dto) {
-        long id = getEntityId(dto);
+    protected ServerPresentationModel createPM(PMDescription type, DTO dto) {
+        long id = entityID(dto);
         return createPM(type, id, dto);
     }
 
-    public ServerPresentationModel createPM(PMDescription type, long id, DTO dto) {
+    protected ServerPresentationModel createPM(PMDescription type, long id, DTO dto) {
         return getServerDolphin().presentationModel(type.pmId(id), type.getName(), dto);
     }
 
-    public ServerPresentationModel createEmptyPM(PMDescription type, long id) {
-        String                 pmId       = type.pmId(id);
-        String                 entityType = type.getEntityName();
-        AttributeDescription[] attr       = type.getAttributeDescriptions();
-        Slot[]                 slots      = new Slot[attr.length];
-        for (int i = 0; i < attr.length; i++) {
-            String qualifier = null;
-            if (entityType != null) {
-                qualifier = entityType + "." + attr[i] + ":" + entityId(pmId);
-            }
-            Object initialValue = getInitialValue(attr[i]);
-            if (ValueType.ID.equals(attr[i].getValueType())) {
-                initialValue = entityId(pmId);
-            }
-            slots[i] = new Slot(attr[i].name(), initialValue, qualifier, Tag.VALUE);
-        }
-        return getServerDolphin().presentationModel(pmId, type.getName(), new DTO(slots));
+    protected ServerPresentationModel createProxyPM(PMDescription pmDescription, long id) {
+        List<Slot> proxySlots = createProxySlots(pmDescription);
+
+        return createPM(pmDescription.pmId(id),
+                        "Proxy:" + pmDescription.getName(),
+                        new DTO(proxySlots));
+
     }
 
     protected void rebase(PMDescription type, List<Long> createdPMs) {
@@ -162,120 +141,6 @@ public abstract class Controller extends DolphinServerAction implements DolphinM
         return (ServerPresentationModel) DolphinMixin.super.get(pmId);
     }
 
-    protected ToAttributeAble propagate(Attribute att) {
-        return new ToAttributeAble(att);
-    }
-
-    protected class ToAttributeAble {
-        private final Attribute originAtt;
-
-        private Function<Object, Object> converter;
-
-        ToAttributeAble(Attribute originAtt) {
-            this.originAtt = originAtt;
-        }
-
-        public void to(Attribute targetAttribute) {
-            originAtt.addPropertyChangeListener(Attribute.VALUE,
-                                                evt -> setValueOnTarget(targetAttribute, evt.getNewValue()));
-
-            setValueOnTarget(targetAttribute, originAtt.getValue());
-        }
-
-        public ToAttributeAble convertedBy(Function<Object, Object> converter) {
-            this.converter = converter;
-
-            return this;
-        }
-
-        private void setValueOnTarget(Attribute targetAttribute, Object newValue) {
-            // can be the case during 'syncWith' one attribute is already synced the other not
-            if (originAtt.getQualifier() == null ||
-                targetAttribute.getQualifier() == null ||
-                entityId(originAtt.getQualifier()) != entityId(targetAttribute.getQualifier())) {
-                return;
-            }
-
-            Object valueToBeSet = converter != null ? converter.apply(newValue) : newValue;
-
-            if (targetAttribute.getValue() == null && valueToBeSet != null ||
-                targetAttribute.getValue() != null && valueToBeSet == null) {
-                targetAttribute.setValue(valueToBeSet);
-            } else if (targetAttribute.getValue() instanceof Float && valueToBeSet != null) {
-                if (Math.abs((Float) valueToBeSet - (Float) targetAttribute.getValue()) > 0.1) {
-                    targetAttribute.setValue(valueToBeSet);
-                }
-            } else if (targetAttribute.getValue() instanceof Double && valueToBeSet != null) {
-                if (Math.abs((Double) valueToBeSet - (Double) targetAttribute.getValue()) > 0.1) {
-                    targetAttribute.setValue(valueToBeSet);
-                }
-            } else if (!targetAttribute.getValue().equals(valueToBeSet)) {
-                targetAttribute.setValue(valueToBeSet);
-            }
-        }
-    }
-
-    protected ForPropertyAble handleValueListener(PropertyChangeListener listener) {
-        return new ForPropertyAble(listener);
-    }
-
-    protected class ForPropertyAble {
-
-        private final PropertyChangeListener listener;
-
-        private ForPropertyAble(PropertyChangeListener listener) {
-            this.listener = listener;
-        }
-
-        public PMTypeAble forProperty(String pmProperty) {
-            return new PMTypeAble(listener, pmProperty);
-        }
-
-        public PMTypeAble forAttribute(AttributeDescription att) {
-            return new PMTypeAble(listener, att);
-        }
-    }
-
-    protected class PMTypeAble {
-
-        private final PropertyChangeListener listener;
-        private       AttributeDescription   att;
-        private       String                 pmProperty;
-
-        private PMTypeAble(PropertyChangeListener listener, String pmProperty) {
-            this.listener = listener;
-            this.pmProperty = pmProperty;
-        }
-
-        private PMTypeAble(PropertyChangeListener listener, AttributeDescription att) {
-            this.listener = listener;
-            this.att = att;
-        }
-
-        public void ofAll(PMDescription type) {
-            if (pmProperty != null) {
-                getServerDolphin().addModelStoreListener(type.getName(), event -> {
-                    PresentationModel pm = event.getPresentationModel();
-                    if (event.getType() == ModelStoreEvent.Type.ADDED) {
-                        pm.addPropertyChangeListener(pmProperty, listener);
-                    } else {
-                        pm.removePropertyChangeListener(pmProperty, listener);
-                    }
-                });
-            } else {
-                getServerDolphin().addModelStoreListener(type.getName(), event -> {
-                    PresentationModel pm = event.getPresentationModel();
-
-                    Attribute attribute = getAttribute(pm, att);
-                    if (event.getType() == ModelStoreEvent.Type.ADDED) {
-                        attribute.addPropertyChangeListener(Attribute.VALUE, listener);
-                    } else {
-                        attribute.removePropertyChangeListener(Attribute.VALUE, listener);
-                    }
-                });
-            }
-        }
-    }
 
     protected List<Slot> createProxySlots(PMDescription pmType) {
         List<Slot> slots = new ArrayList<>();
@@ -292,10 +157,6 @@ public abstract class Controller extends DolphinServerAction implements DolphinM
         });
 
         return slots;
-    }
-
-    protected long getEntityId(DTO dto) {
-        return entityId(dto.getSlots().get(0).getQualifier());
     }
 
     protected Slot getSlot(DTO dto, AttributeDescription att) {
@@ -320,6 +181,7 @@ public abstract class Controller extends DolphinServerAction implements DolphinM
     protected <T> T getValue(DTO dto, AttributeDescription att) {
         return (T) getSlot(dto, att).getValue();
     }
+
 
     protected void translate(PresentationModel proxyPM, Language language) {
         ResourceBundle  bundle     = getResourceBundle(proxyPM, language);

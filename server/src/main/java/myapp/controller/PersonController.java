@@ -6,15 +6,14 @@ import java.util.List;
 import org.opendolphin.core.Dolphin;
 import org.opendolphin.core.server.DTO;
 import org.opendolphin.core.server.ServerPresentationModel;
-import org.opendolphin.core.server.Slot;
 import org.opendolphin.core.server.comm.ActionRegistry;
 
-import myapp.controller.util.Controller;
 import myapp.presentationmodel.PMDescription;
 import myapp.presentationmodel.SpecialPMMixin;
 import myapp.presentationmodel.person.Person;
 import myapp.presentationmodel.person.PersonCommands;
 import myapp.service.SomeService;
+import myapp.util.Controller;
 
 /**
  * This is an example for an application specific controller.
@@ -33,20 +32,16 @@ class PersonController extends Controller implements SpecialPMMixin {
     }
 
     @Override
-    public void registerIn(ActionRegistry actionRegistry) {
-        super.registerIn(actionRegistry);
-        actionRegistry.register(PersonCommands.LOAD_SOME_PERSON, (command, response) -> loadPerson());
-        actionRegistry.register(PersonCommands.SAVE            , (command, response) -> save());
-        actionRegistry.register(PersonCommands.RESET           , (command, response) -> reset(PMDescription.PERSON, Collections.emptyList()));
+    public void registerIn(ActionRegistry reception) {
+        super.registerIn(reception);
+        reception.register(PersonCommands.LOAD_SOME_PERSON, (command, response) -> loadPerson());
+        reception.register(PersonCommands.SAVE            , (command, response) -> save());
+        reception.register(PersonCommands.RESET           , (command, response) -> reset(PMDescription.PERSON, Collections.emptyList()));
     }
 
     @Override
     protected void initializeBasePMs() {
-        List<Slot> proxySlots = createProxySlots(PMDescription.PERSON);
-
-        ServerPresentationModel pm = createPM(PERSON_PROXY_PM_ID,
-                                              "Proxy:" + PMDescription.PERSON.getName(),
-                                              new DTO(proxySlots));
+        ServerPresentationModel pm = createProxyPM(PMDescription.PERSON, PERSON_PROXY_ID);
         personProxy = new Person(pm);
     }
 
@@ -59,7 +54,6 @@ class PersonController extends Controller implements SpecialPMMixin {
 
     @Override
     protected void setupValueChangedListener() {
-        super.setupValueChangedListener();
         getPresentationState().language.valueProperty().addListener((observable, oldValue, newValue) -> {
             translate(personProxy, newValue);
         });

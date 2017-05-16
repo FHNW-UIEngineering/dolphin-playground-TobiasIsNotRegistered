@@ -15,7 +15,7 @@ import myapp.presentationmodel.PMDescription;
 import myapp.presentationmodel.person.Person;
 import myapp.presentationmodel.person.PersonAtt;
 import myapp.service.SomeService;
-import myapp.service.util.DTOMixin;
+import myapp.util.DTOMixin;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

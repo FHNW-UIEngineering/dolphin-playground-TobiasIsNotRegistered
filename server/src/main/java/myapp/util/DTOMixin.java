@@ -1,4 +1,4 @@
-package myapp.service.util;
+package myapp.util;
 
 import java.util.Arrays;
 import java.util.List;

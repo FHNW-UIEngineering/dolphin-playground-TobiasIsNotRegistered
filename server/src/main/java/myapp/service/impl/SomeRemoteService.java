@@ -7,7 +7,7 @@ import org.opendolphin.core.server.DTO;
 
 import myapp.presentationmodel.person.PersonAtt;
 import myapp.service.SomeService;
-import myapp.service.util.DTOMixin;
+import myapp.util.DTOMixin;
 
 public class SomeRemoteService implements SomeService, DTOMixin {
     String[] names = {"Neil Amstrong"  , "Michael Collins" , "Edwin Aldrin",      // Apollo 11

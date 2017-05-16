@@ -11,27 +11,26 @@ import org.opendolphin.core.client.ClientDolphin;
 import myapp.presentationmodel.SpecialPMMixin;
 import myapp.presentationmodel.person.PersonCommands;
 import myapp.util.BasicCommands;
-import myapp.util.ClientDolphinMixin;
 
 /**
  * The main view of MyApp.
  */
 
-public class MyAppView extends Application implements ClientDolphinMixin, SpecialPMMixin {
+public class MyAppView extends Application implements SpecialPMMixin {
     static ClientDolphin clientDolphin;
 
     @Override
     public void start(Stage stage) throws Exception {
-        send(BasicCommands.INITIALIZE_BASE_PMS,
+        clientDolphin.send(BasicCommands.INITIALIZE_BASE_PMS,
              $ -> {
                  buildUI(stage);
-                 send(BasicCommands.INITIALIZE_CONTROLLER,
-                      $$ -> send(PersonCommands.LOAD_SOME_PERSON));
+                 clientDolphin.send(BasicCommands.INITIALIZE_CONTROLLER,
+                      $$ -> clientDolphin.send(PersonCommands.LOAD_SOME_PERSON));
              });
     }
 
     private void buildUI(Stage stage) {
-        Pane root = new RootPane(clientDolphin);
+        Pane root   = new RootPane(clientDolphin);
         Scene scene = new Scene(root);
 
         stage.setScene(scene);

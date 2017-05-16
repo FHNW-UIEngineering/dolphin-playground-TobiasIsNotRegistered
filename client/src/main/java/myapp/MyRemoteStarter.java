@@ -11,6 +11,7 @@ import myapp.util.DefaultClientDolphinProvider;
 public class MyRemoteStarter {
 
     public static void main(String[] args) throws Exception {
+        //todo set the host
         String host = "localhost:8080";
         if (args.length == 1) {
             host = args[0];

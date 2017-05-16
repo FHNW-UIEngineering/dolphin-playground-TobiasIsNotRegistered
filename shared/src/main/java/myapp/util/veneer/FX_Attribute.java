@@ -29,8 +29,8 @@ public abstract class FX_Attribute<PropertyType extends Property<ValueType>, Val
     private final BooleanProperty         readOnly;
     private final BooleanProperty         valid;
     private final StringProperty          validationMessage;
-    private final ReadOnlyBooleanProperty dirty;
     private final StringProperty          userFacingString;
+    private final ReadOnlyBooleanProperty dirty;
 
     private final Pattern syntaxPattern;
 
@@ -38,13 +38,13 @@ public abstract class FX_Attribute<PropertyType extends Property<ValueType>, Val
         this.syntaxPattern  = Pattern.compile(syntaxPattern);
 
         value             = dolphinValueAttributeAdapter;
-        label             = new StringAttributeAdapter(pm.getAt(attributeDescription.name(), Tag.LABEL));
+        label             = new StringAttributeAdapter(pm.getAt(attributeDescription.name() , Tag.LABEL));
         mandatory         = new BooleanAttributeAdapter(pm.getAt(attributeDescription.name(), Tag.MANDATORY));
         readOnly          = new BooleanAttributeAdapter(pm.getAt(attributeDescription.name(), AdditionalTag.READ_ONLY));
         valid             = new BooleanAttributeAdapter(pm.getAt(attributeDescription.name(), AdditionalTag.VALID));
-        validationMessage = new StringAttributeAdapter(pm.getAt(attributeDescription.name(), AdditionalTag.VALIDATION_MESSAGE));
+        validationMessage = new StringAttributeAdapter(pm.getAt(attributeDescription.name() , AdditionalTag.VALIDATION_MESSAGE));
+        userFacingString  = new StringAttributeAdapter(pm.getAt(attributeDescription.name() , AdditionalTag.USER_FACING_STRING));
         dirty             = new DirtyPropertyAdapter(valueAttribute(pm, attributeDescription));
-        userFacingString  = new StringAttributeAdapter(pm.getAt(attributeDescription.name(), AdditionalTag.USER_FACING_STRING));
 
         setUserFacingString(format(valueProperty().getValue()));
 
