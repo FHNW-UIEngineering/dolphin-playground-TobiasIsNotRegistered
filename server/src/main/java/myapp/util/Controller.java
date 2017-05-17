@@ -87,7 +87,6 @@ public abstract class Controller extends DolphinServerAction implements DolphinM
         return createPM(pmDescription.pmId(id),
                         "Proxy:" + pmDescription.getName(),
                         new DTO(proxySlots));
-
     }
 
     protected void rebase(PMDescription type, List<Long> createdPMs) {
@@ -108,7 +107,6 @@ public abstract class Controller extends DolphinServerAction implements DolphinM
                                                att.getValue(),
                                                att.getQualifier()))
                           .collect(Collectors.toList());
-
     }
 
     protected List<DTO> dirtyDTOs(PMDescription type, List<Long> createdPMs) {
@@ -146,14 +144,14 @@ public abstract class Controller extends DolphinServerAction implements DolphinM
         List<Slot> slots = new ArrayList<>();
 
         Arrays.stream(pmType.getAttributeDescriptions()).forEach(att -> {
-            slots.add(new Slot(att.name(), getInitialValue(att), null, Tag.VALUE));
-            slots.add(new Slot(att.name(), att.name().toLowerCase(), att.labelQualifier(), Tag.LABEL));
-            slots.add(new Slot(att.name(), att.getValueType().name(), null, Tag.VALUE_TYPE));
-            slots.add(new Slot(att.name(), false, null, Tag.MANDATORY));
-            slots.add(new Slot(att.name(), true, null, AdditionalTag.VALID));
-            slots.add(new Slot(att.name(), null, null, AdditionalTag.VALIDATION_MESSAGE));
-            slots.add(new Slot(att.name(), false, null, AdditionalTag.READ_ONLY));
-            slots.add(new Slot(att.name(), "", null, AdditionalTag.USER_FACING_STRING));
+            slots.add(new Slot(att.name(), getInitialValue(att)     , null                , Tag.VALUE));
+            slots.add(new Slot(att.name(), att.name().toLowerCase() , att.labelQualifier(), Tag.LABEL));
+            slots.add(new Slot(att.name(), att.getValueType().name(), null                , Tag.VALUE_TYPE));
+            slots.add(new Slot(att.name(), false                    , null                , Tag.MANDATORY));
+            slots.add(new Slot(att.name(), true                     , null                , AdditionalTag.VALID));
+            slots.add(new Slot(att.name(), null                     , null                , AdditionalTag.VALIDATION_MESSAGE));
+            slots.add(new Slot(att.name(), false                    , null                , AdditionalTag.READ_ONLY));
+            slots.add(new Slot(att.name(), ""                       , null                , AdditionalTag.USER_FACING_STRING));
         });
 
         return slots;
