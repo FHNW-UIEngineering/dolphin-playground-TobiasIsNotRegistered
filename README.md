@@ -1,4 +1,4 @@
-#OpenDolphin Template#
+#OpenDolphin Template
 
 This project provides a template for using [OpenDolphin](http://open-dolphin.org) 
 
@@ -7,11 +7,11 @@ This project provides a template for using [OpenDolphin](http://open-dolphin.org
 - with JavaFX as the client technology
 - with Gradle for build automation.
 
-##Quick Setup##
+##Quick Setup
 
 Prerequisite: Java 8 or above.
 
-Git clone to a location of you liking and you will see a gradle multi-project build.
+Git clone to a location of your liking and you will see a gradle multi-project build.
 
 It contains the following modules/projects
 - client: in a remote scenario, this is the client. It typically contains only view classes.
@@ -19,32 +19,37 @@ It contains the following modules/projects
 - shared: this one is totally optional. If used, it typically contains shared constants between client and server.
 - combined: combines all the above in one JVM for starting with the in-memory configuration for develop/test/debug.
 
-##Application introduction##
+##Application introduction
 
-We implement a very simple application that contains only one label two text fields to show the various binding options
-and two buttons to 'save' or 'reset' the value. 'Saving' will do nothing but printing the current field value
-on the server side.
+We implement a very simple application that contains only a simple header section and an editor area
+with three labels, two text fields to show the various binding options.
+'Save' will do nothing but printing all modified attributes
+on the server side. 'Reset' is used to reset all modified attributes to their initial value (or the value that has been saved).
+'Next' will load a new 'Person' via a service call. 'German' and 'English' are for multi-language support.
 
-Both buttons are only enabled if there is really something to save/reset, i.e. the field value is dirty.
+'Save' and 'Reset' buttons are only enabled if there is really something to save/reset, i.e. at least one attribute value is dirty.
 The dirty state is also visualized via a CSS class (background color changes).
-Resetting triggers a 'shake' animation.
 
-##Running the samples##
+The 'Name' field is marked as mandatory using a green border.
 
-###JavaFx example###
+##Running the samples
 
-Using Gradle you can call the following to start the application.
+###JavaFx example
+
+Using Gradle you can call the following to start the application in **combined mode**, i.e. both server and client in a single JVM.
 
     ./gradlew run 
 
-*todo: explain in-memory vs server mode and how to start each.*
 
-
-When running the in server mode make sure that the server application is running too. To do so, call
+When running the application in **server mode** make sure that the server application is running too. To do so, call
 
     ./gradlew jettyRun
+    
+With a server running, you can start a client. Run from the client-module 
 
-##More Info##
+    myapp.MyRemoteStarter
+    
+##More Info
 
 This has only been a first glance into the way that OpenDolphin operates.
 
