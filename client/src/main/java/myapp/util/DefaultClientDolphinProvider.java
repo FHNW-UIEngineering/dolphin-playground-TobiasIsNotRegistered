@@ -25,6 +25,8 @@ public class DefaultClientDolphinProvider {
                                                                 serverURL);
         connector.setCodec(new JsonCodec());
         connector.setUiThreadHandler(new JavaFXUiThreadHandler());
+        connector.setStrictMode(false);
+
 
         clientDolphin.setClientConnector(connector);
 

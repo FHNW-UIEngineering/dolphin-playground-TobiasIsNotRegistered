@@ -215,10 +215,10 @@ class RootPane extends GridPane implements ViewMixin, SpecialPMMixin {
         JFXBinder.bindInfo(Attribute.DIRTY_PROPERTY).of(personPM).using(not).to("disable").of(saveButton);
         JFXBinder.bindInfo(Attribute.DIRTY_PROPERTY).of(personPM).using(not).to("disable").of(resetButton);
 
-        PresentationModel ps = getPresentationStatePM();
+        PresentationModel presentationStatePM = clientDolphin.getAt(SpecialPMMixin.PRESENTATION_STATE_PM_ID);
 
-        JFXBinder.bind(PresentationStateAtt.LANGUAGE.name()).of(ps).using(value -> value.equals(Language.GERMAN.name())).to("disable").of(germanButton);
-        JFXBinder.bind(PresentationStateAtt.LANGUAGE.name()).of(ps).using(value -> value.equals(Language.ENGLISH.name())).to("disable").of(englishButton);
+        JFXBinder.bind(PresentationStateAtt.LANGUAGE.name()).of(presentationStatePM).using(value -> value.equals(Language.GERMAN.name())).to("disable").of(germanButton);
+        JFXBinder.bind(PresentationStateAtt.LANGUAGE.name()).of(presentationStatePM).using(value -> value.equals(Language.ENGLISH.name())).to("disable").of(englishButton);
     }
 
     private void setupBindings_VeneerBased(){

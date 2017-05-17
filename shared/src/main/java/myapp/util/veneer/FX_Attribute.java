@@ -1,6 +1,7 @@
 package myapp.util.veneer;
 
 import java.util.Locale;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import javafx.application.Platform;
@@ -58,7 +59,10 @@ public abstract class FX_Attribute<PropertyType extends Property<ValueType>, Val
         });
 
         valueProperty().addListener((observable, oldValue, newValue) -> {
-            setUserFacingString(format(newValue));
+            String formattedValue = format(newValue);
+            if(Objects.equals(formattedValue, getUserFacingString())){
+                setUserFacingString(formattedValue);
+            }
         });
     }
 
@@ -84,7 +88,10 @@ public abstract class FX_Attribute<PropertyType extends Property<ValueType>, Val
         } else {
             setValid(true);
             setValidationMessage("OK!");
-            valueProperty().setValue(convertToValue(userInput));
+            ValueType value = convertToValue(userInput);
+            if(!Objects.equals(value, valueProperty().getValue())){
+                valueProperty().setValue(value);
+            }
         }
     }
 

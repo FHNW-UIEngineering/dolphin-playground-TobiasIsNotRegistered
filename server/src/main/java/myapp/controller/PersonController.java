@@ -11,6 +11,7 @@ import org.opendolphin.core.server.comm.ActionRegistry;
 import myapp.presentationmodel.PMDescription;
 import myapp.presentationmodel.SpecialPMMixin;
 import myapp.presentationmodel.person.Person;
+import myapp.presentationmodel.person.PersonAtt;
 import myapp.presentationmodel.person.PersonCommands;
 import myapp.service.SomeService;
 import myapp.util.Controller;
@@ -48,8 +49,6 @@ class PersonController extends Controller implements SpecialPMMixin {
     @Override
     protected void setDefaultValues() {
         personProxy.name.setMandatory(true);
-        personProxy.age.setValue(10);
-        personProxy.isAdult.setValue(false);
     }
 
     @Override

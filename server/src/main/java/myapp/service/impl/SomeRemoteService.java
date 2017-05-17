@@ -22,11 +22,14 @@ public class SomeRemoteService implements SomeService, DTOMixin {
     public DTO loadSomeEntity() {
         long id = createNewId();
 
-        Random r = new Random();
-        return new DTO(createSlot(PersonAtt.ID      , id                            , id),
-                       createSlot(PersonAtt.NAME    , names[r.nextInt(names.length)], id),
-                       createSlot(PersonAtt.AGE     , r.nextInt(43)                 , id),
-                       createSlot(PersonAtt.IS_ADULT, false                         , id));
+        Random r        = new Random();
+        String name     = names[r.nextInt(names.length)];
+        int    age      = r.nextInt(43);
+        boolean isAdult = age >= 18;
+        return new DTO(createSlot(PersonAtt.ID      , id     , id),
+                       createSlot(PersonAtt.NAME    , name   , id),
+                       createSlot(PersonAtt.AGE     , age    , id),
+                       createSlot(PersonAtt.IS_ADULT, isAdult, id));
     }
 
     @Override

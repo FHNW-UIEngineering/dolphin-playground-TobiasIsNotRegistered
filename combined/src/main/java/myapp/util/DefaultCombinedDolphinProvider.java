@@ -24,8 +24,9 @@ public class DefaultCombinedDolphinProvider {
         commandBatcher.setDeferMillis(200);
 
         InMemoryClientConnector clientConnector = new InMemoryClientConnector(clientDolphin, serverDolphin.getServerConnector(), commandBatcher);
-        clientConnector.setSleepMillis(100);
+        clientConnector.setSleepMillis(10);
         clientConnector.setUiThreadHandler(new JavaFXUiThreadHandler());
+        clientConnector.setStrictMode(false);
 
         clientDolphin.setClientConnector(clientConnector);
         clientDolphin.setClientModelStore(new ClientModelStore(clientDolphin));
