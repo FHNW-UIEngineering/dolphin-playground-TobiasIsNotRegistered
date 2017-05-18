@@ -61,7 +61,12 @@ public abstract class FX_Attribute<PropertyType extends Property<ValueType>, Val
         valueProperty().addListener((observable, oldValue, newValue) -> {
             String formattedValue = format(newValue);
             if(!Objects.equals(formattedValue, getUserFacingString())){
-                setUserFacingString(formattedValue);
+                if(Platform.isFxApplicationThread()){
+                    Platform.runLater(() -> setUserFacingString(formattedValue));
+                }
+                else {
+                    setUserFacingString(formattedValue);
+                }
             }
         });
     }
