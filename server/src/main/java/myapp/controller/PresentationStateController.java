@@ -3,23 +3,23 @@ package myapp.controller;
 import org.opendolphin.core.server.ServerPresentationModel;
 
 import myapp.presentationmodel.PMDescription;
-import myapp.presentationmodel.SpecialPMMixin;
-import myapp.presentationmodel.presentationstate.PresentationState;
+import myapp.presentationmodel.BasePmMixin;
+import myapp.presentationmodel.presentationstate.ApplicationState;
 import myapp.util.Controller;
 import myapp.util.Language;
 
 /**
  * @author Dieter Holz
  */
-public class PresentationStateController extends Controller implements SpecialPMMixin{
+public class PresentationStateController extends Controller implements BasePmMixin {
 
-    private PresentationState ps;
+    private ApplicationState ps;
 
     @Override
     protected void initializeBasePMs() {
-        ServerPresentationModel presentationStatePM = createProxyPM(PMDescription.PRESENTATION_STATE, SpecialPMMixin.PRESENTATION_STATE_ID);
+        ServerPresentationModel presentationStatePM = createProxyPM(PMDescription.APPLICATION_STATE, BasePmMixin.APPLICATION_STATE_ID);
 
-        ps = new PresentationState(presentationStatePM);
+        ps = new ApplicationState(presentationStatePM);
     }
 
     @Override

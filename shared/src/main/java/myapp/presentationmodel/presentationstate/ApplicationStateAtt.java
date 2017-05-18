@@ -7,8 +7,9 @@ import myapp.util.ValueType;
 /**
  * @author Dieter Holz
  */
-public enum PresentationStateAtt implements AttributeDescription {
-    // todo: all all application specific attributes
+
+public enum ApplicationStateAtt implements AttributeDescription {
+    // todo: add all application specific attributes
 
 
     // these are almost always needed
@@ -20,7 +21,7 @@ public enum PresentationStateAtt implements AttributeDescription {
 
     private final ValueType valueType;
 
-    PresentationStateAtt(ValueType type) {
+    ApplicationStateAtt(ValueType type) {
         valueType = type;
     }
 
@@ -30,6 +31,6 @@ public enum PresentationStateAtt implements AttributeDescription {
 
     @Override
     public PMDescription getPMDescription() {
-        return PMDescription.PRESENTATION_STATE;
+        return PMDescription.APPLICATION_STATE;
     }
 }

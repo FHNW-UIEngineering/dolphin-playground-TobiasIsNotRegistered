@@ -55,7 +55,7 @@ public abstract class Controller extends DolphinServerAction implements DolphinM
     protected void setupBinding() {
     }
 
-    private void initializeController() {
+    protected void initializeController() {
         setupModelStoreListener();
         setupValueChangedListener();
         setupBinding();

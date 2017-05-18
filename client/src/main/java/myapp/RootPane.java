@@ -21,12 +21,12 @@ import org.opendolphin.core.Tag;
 import org.opendolphin.core.client.ClientDolphin;
 import org.opendolphin.core.client.ClientPresentationModel;
 
-import myapp.presentationmodel.SpecialPMMixin;
+import myapp.presentationmodel.BasePmMixin;
 import myapp.presentationmodel.person.Person;
 import myapp.presentationmodel.person.PersonAtt;
 import myapp.presentationmodel.person.PersonCommands;
-import myapp.presentationmodel.presentationstate.PresentationState;
-import myapp.presentationmodel.presentationstate.PresentationStateAtt;
+import myapp.presentationmodel.presentationstate.ApplicationState;
+import myapp.presentationmodel.presentationstate.ApplicationStateAtt;
 import myapp.util.AdditionalTag;
 import myapp.util.Language;
 import myapp.util.ViewMixin;
@@ -40,7 +40,7 @@ import myapp.util.veneer.FX_BooleanAttribute;
  *
  * todo : Replace it with your application UI
  */
-class RootPane extends GridPane implements ViewMixin, SpecialPMMixin {
+class RootPane extends GridPane implements ViewMixin, BasePmMixin {
 
     private static final String DIRTY_STYLE     = "dirty";
     private static final String INVALID_STYLE   = "invalid";
@@ -68,12 +68,12 @@ class RootPane extends GridPane implements ViewMixin, SpecialPMMixin {
     private Button germanButton;
     private Button englishButton;
 
-    private final PresentationState ps;
-    private final Person personProxy;
+    private final ApplicationState ps;
+    private final Person           personProxy;
 
     RootPane(ClientDolphin clientDolphin) {
         this.clientDolphin = clientDolphin;
-        ps = getPresentationState();
+        ps = getApplicationState();
         personProxy = getPersonProxy();
 
         init();
@@ -139,7 +139,7 @@ class RootPane extends GridPane implements ViewMixin, SpecialPMMixin {
         // all events either send a command (needs to be registered in a controller on the server side)
         // or set a value on an Attribute
 
-        PresentationState ps = getPresentationState();
+        ApplicationState ps = getApplicationState();
         saveButton.setOnAction(   $ -> clientDolphin.send(PersonCommands.SAVE));
         resetButton.setOnAction(  $ -> clientDolphin.send(PersonCommands.RESET));
         nextButton.setOnAction(   $ -> clientDolphin.send(PersonCommands.LOAD_SOME_PERSON));
@@ -171,54 +171,54 @@ class RootPane extends GridPane implements ViewMixin, SpecialPMMixin {
 
     private void setupBindings_DolphinBased() {
         // you can fetch all existing PMs from the modelstore via clientDolphin
-        ClientPresentationModel personPM = clientDolphin.getAt(SpecialPMMixin.PERSON_PROXY_PM_ID);
+        ClientPresentationModel personProxyPM = clientDolphin.getAt(BasePmMixin.PERSON_PROXY_PM_ID);
 
         //JFXBinder is ui toolkit agnostic. We have to use Strings
         JFXBinder.bind(PersonAtt.NAME.name())
-                 .of(personPM)
-                 .using(value -> value + ", " + personPM.getAt(PersonAtt.AGE.name()).getValue())
+                 .of(personProxyPM)
+                 .using(value -> value + ", " + personProxyPM.getAt(PersonAtt.AGE.name()).getValue())
                  .to("text")
                  .of(headerLabel);
 
         JFXBinder.bind(PersonAtt.AGE.name())
-                 .of(personPM)
-                 .using(value -> personPM.getAt(PersonAtt.NAME.name()).getValue() + ", " + value)
+                 .of(personProxyPM)
+                 .using(value -> personProxyPM.getAt(PersonAtt.NAME.name()).getValue() + ", " + value)
                  .to("text")
                  .of(headerLabel);
 
-        JFXBinder.bind(PersonAtt.NAME.name(), Tag.LABEL).of(personPM).to("text").of(nameLabel);
-        JFXBinder.bind(PersonAtt.NAME.name()).of(personPM).to("text").of(nameField);
-        JFXBinder.bind("text").of(nameField).to(PersonAtt.NAME.name()).of(personPM);
+        JFXBinder.bind(PersonAtt.NAME.name(), Tag.LABEL).of(personProxyPM).to("text").of(nameLabel);
+        JFXBinder.bind(PersonAtt.NAME.name()).of(personProxyPM).to("text").of(nameField);
+        JFXBinder.bind("text").of(nameField).to(PersonAtt.NAME.name()).of(personProxyPM);
 
-        JFXBinder.bind(PersonAtt.AGE.name(), Tag.LABEL).of(personPM).to("text").of(ageLabel);
-        JFXBinder.bind(PersonAtt.AGE.name()).of(personPM).to("text").of(ageField);
+        JFXBinder.bind(PersonAtt.AGE.name(), Tag.LABEL).of(personProxyPM).to("text").of(ageLabel);
+        JFXBinder.bind(PersonAtt.AGE.name()).of(personProxyPM).to("text").of(ageField);
         Converter toIntConverter = value -> {
             try {
                 int newValue = Integer.parseInt(value.toString());
-                personPM.getAt(PersonAtt.AGE.name(), AdditionalTag.VALID).setValue(true);
-                personPM.getAt(PersonAtt.AGE.name(), AdditionalTag.VALIDATION_MESSAGE).setValue("OK");
+                personProxyPM.getAt(PersonAtt.AGE.name(), AdditionalTag.VALID).setValue(true);
+                personProxyPM.getAt(PersonAtt.AGE.name(), AdditionalTag.VALIDATION_MESSAGE).setValue("OK");
 
                 return newValue;
             } catch (NumberFormatException e) {
-                personPM.getAt(PersonAtt.AGE.name(), AdditionalTag.VALID).setValue(false);
-                personPM.getAt(PersonAtt.AGE.name(), AdditionalTag.VALIDATION_MESSAGE).setValue("Not a number");
-                return personPM.getAt(PersonAtt.AGE.name()).getValue();
+                personProxyPM.getAt(PersonAtt.AGE.name(), AdditionalTag.VALID).setValue(false);
+                personProxyPM.getAt(PersonAtt.AGE.name(), AdditionalTag.VALIDATION_MESSAGE).setValue("Not a number");
+                return personProxyPM.getAt(PersonAtt.AGE.name()).getValue();
             }
         };
-        JFXBinder.bind("text").of(ageField).using(toIntConverter).to(PersonAtt.AGE.name()).of(personPM);
+        JFXBinder.bind("text").of(ageField).using(toIntConverter).to(PersonAtt.AGE.name()).of(personProxyPM);
 
-        JFXBinder.bind(PersonAtt.IS_ADULT.name(), Tag.LABEL).of(personPM).to("text").of(isAdultLabel);
-        JFXBinder.bind(PersonAtt.IS_ADULT.name()).of(personPM).to("selected").of(isAdultCheckBox);
-        JFXBinder.bind("selected").of(isAdultCheckBox).to(PersonAtt.IS_ADULT.name()).of(personPM);
+        JFXBinder.bind(PersonAtt.IS_ADULT.name(), Tag.LABEL).of(personProxyPM).to("text").of(isAdultLabel);
+        JFXBinder.bind(PersonAtt.IS_ADULT.name()).of(personProxyPM).to("selected").of(isAdultCheckBox);
+        JFXBinder.bind("selected").of(isAdultCheckBox).to(PersonAtt.IS_ADULT.name()).of(personProxyPM);
 
         Converter not = value -> !(boolean) value;
-        JFXBinder.bindInfo(Attribute.DIRTY_PROPERTY).of(personPM).using(not).to("disable").of(saveButton);
-        JFXBinder.bindInfo(Attribute.DIRTY_PROPERTY).of(personPM).using(not).to("disable").of(resetButton);
+        JFXBinder.bindInfo(Attribute.DIRTY_PROPERTY).of(personProxyPM).using(not).to("disable").of(saveButton);
+        JFXBinder.bindInfo(Attribute.DIRTY_PROPERTY).of(personProxyPM).using(not).to("disable").of(resetButton);
 
-        PresentationModel presentationStatePM = clientDolphin.getAt(SpecialPMMixin.PRESENTATION_STATE_PM_ID);
+        PresentationModel presentationStatePM = clientDolphin.getAt(BasePmMixin.APPLICATION_STATE_PM_ID);
 
-        JFXBinder.bind(PresentationStateAtt.LANGUAGE.name()).of(presentationStatePM).using(value -> value.equals(Language.GERMAN.name())).to("disable").of(germanButton);
-        JFXBinder.bind(PresentationStateAtt.LANGUAGE.name()).of(presentationStatePM).using(value -> value.equals(Language.ENGLISH.name())).to("disable").of(englishButton);
+        JFXBinder.bind(ApplicationStateAtt.LANGUAGE.name()).of(presentationStatePM).using(value -> value.equals(Language.GERMAN.name())).to("disable").of(germanButton);
+        JFXBinder.bind(ApplicationStateAtt.LANGUAGE.name()).of(presentationStatePM).using(value -> value.equals(Language.ENGLISH.name())).to("disable").of(englishButton);
     }
 
     private void setupBindings_VeneerBased(){

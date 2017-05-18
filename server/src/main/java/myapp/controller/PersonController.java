@@ -9,9 +9,8 @@ import org.opendolphin.core.server.ServerPresentationModel;
 import org.opendolphin.core.server.comm.ActionRegistry;
 
 import myapp.presentationmodel.PMDescription;
-import myapp.presentationmodel.SpecialPMMixin;
+import myapp.presentationmodel.BasePmMixin;
 import myapp.presentationmodel.person.Person;
-import myapp.presentationmodel.person.PersonAtt;
 import myapp.presentationmodel.person.PersonCommands;
 import myapp.service.SomeService;
 import myapp.util.Controller;
@@ -23,7 +22,7 @@ import myapp.util.Controller;
  * <p>
  * Todo: Replace this with your Controller
  */
-class PersonController extends Controller implements SpecialPMMixin {
+class PersonController extends Controller implements BasePmMixin {
 
     private final SomeService service;
     private       Person      personProxy;
@@ -53,7 +52,7 @@ class PersonController extends Controller implements SpecialPMMixin {
 
     @Override
     protected void setupValueChangedListener() {
-        getPresentationState().language.valueProperty().addListener((observable, oldValue, newValue) -> {
+        getApplicationState().language.valueProperty().addListener((observable, oldValue, newValue) -> {
             translate(personProxy, newValue);
         });
     }
