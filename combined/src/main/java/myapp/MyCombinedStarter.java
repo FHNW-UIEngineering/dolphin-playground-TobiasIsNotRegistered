@@ -24,7 +24,10 @@ public class MyCombinedStarter {
     }
 
     private static void registerApplicationActions(ServerDolphin serverDolphin) {
-        serverDolphin.register(new Reception(new SomeCombinedService()));
+        //todo: instantiate all your services here and provide them to the Reception
+        SomeCombinedService myService = new SomeCombinedService();
+
+        serverDolphin.register(new Reception(myService));
     }
 
 }

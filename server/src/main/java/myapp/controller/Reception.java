@@ -6,8 +6,9 @@ import org.opendolphin.core.server.comm.ActionRegistry;
 import myapp.service.SomeService;
 
 /**
-	At the reception all controllers check in.
-*/
+ * At the reception all controllers check in.
+ *
+ */
 
 public class Reception extends DolphinServerAction {
     private SomeService myService;
@@ -21,6 +22,6 @@ public class Reception extends DolphinServerAction {
         getServerDolphin().register(new PersonController(myService));
 
         //always needed
-        getServerDolphin().register(new PresentationStateController());
+        getServerDolphin().register(new ApplicationStateController());
     }
 }

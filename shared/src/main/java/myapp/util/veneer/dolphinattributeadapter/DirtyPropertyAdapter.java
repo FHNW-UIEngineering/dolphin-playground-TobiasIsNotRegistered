@@ -1,4 +1,4 @@
-package myapp.util.veneer;
+package myapp.util.veneer.dolphinattributeadapter;
 
 import java.lang.ref.WeakReference;
 

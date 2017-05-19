@@ -5,9 +5,9 @@ import myapp.util.AttributeDescription;
 import myapp.util.ValueType;
 
 /**
- * @author Dieter Holz
+ * todo: Describe all your application specific PresentationModel-Attributes like this
  */
-public enum  PersonAtt implements AttributeDescription{
+public enum PersonAtt implements AttributeDescription {
     ID(ValueType.ID),
     NAME(ValueType.STRING),
     AGE(ValueType.INT),
@@ -19,6 +19,7 @@ public enum  PersonAtt implements AttributeDescription{
         valueType = type;
     }
 
+    @Override
     public ValueType getValueType() {
         return valueType;
     }

@@ -2,6 +2,8 @@ package myapp.presentationmodel.person;
 
 /**
  * @author Dieter Holz
+ *
+ * todo: specify all commands you need in your corresponding controller
  */
 public interface PersonCommands {
 	String LOAD_SOME_PERSON = unique("loadSomePerson");

@@ -1,16 +1,18 @@
-package myapp.util.veneer;
+package myapp.util.veneer.dolphinattributeadapter;
 
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleLongProperty;
 
 import org.opendolphin.core.Attribute;
 
 /**
+ * Adapter for a Dolphin Attribute of type Long.
+ *
  * @author Dieter Holz
  */
-public class IntegerAttributeAdapter extends SimpleIntegerProperty {
-    private final ObjectAttributeAdapter<Integer> wrapper;
+public class LongAttributeAdapter extends SimpleLongProperty {
+    private final ObjectAttributeAdapter<Long> wrapper;
 
-    public IntegerAttributeAdapter(Attribute attribute) {
+    public LongAttributeAdapter(Attribute attribute) {
         wrapper = new ObjectAttributeAdapter<>(attribute);
         wrapper.addListener((observable, oldValue, newValue) -> fireValueChangedEvent());
     }
@@ -21,22 +23,22 @@ public class IntegerAttributeAdapter extends SimpleIntegerProperty {
     }
 
     @Override
-    public void set(int newValue) {
+    public void set(long newValue) {
         wrapper.set(newValue);
     }
 
     @Override
     public void setValue(Number v) {
-        set(v.intValue());
+        set(v.longValue());
     }
 
     @Override
-    public int get() {
+    public long get() {
         return wrapper.getValue();
     }
 
     @Override
-    public Integer getValue() {
+    public Long getValue() {
         return get();
     }
 }

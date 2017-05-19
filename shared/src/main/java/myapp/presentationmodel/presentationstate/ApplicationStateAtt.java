@@ -15,8 +15,6 @@ public enum ApplicationStateAtt implements AttributeDescription {
     // these are almost always needed
     APPLICATION_TITLE(ValueType.STRING),
     LANGUAGE(ValueType.STRING),
-    UNDO_DISABLED(ValueType.BOOLEAN),
-    REDO_DISABLED(ValueType.BOOLEAN),
     CLEAN_DATA(ValueType.BOOLEAN);
 
     private final ValueType valueType;
@@ -25,6 +23,7 @@ public enum ApplicationStateAtt implements AttributeDescription {
         valueType = type;
     }
 
+    @Override
     public ValueType getValueType() {
         return valueType;
     }

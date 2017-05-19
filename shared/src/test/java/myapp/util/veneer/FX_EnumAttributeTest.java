@@ -1,10 +1,5 @@
 package myapp.util.veneer;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javafx.collections.FXCollections;
-
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -18,7 +13,7 @@ public class FX_EnumAttributeTest {
         //given
 
         //when
-        String regex = FX_EnumAttribute.createRegex(SomeEnum.class);
+        String regex = EnumAttributeFX.createRegex(SomeEnum.class);
 
         //then
         assertEquals("((?i)FIRST){1}|((?i)SECOND){1}", regex);

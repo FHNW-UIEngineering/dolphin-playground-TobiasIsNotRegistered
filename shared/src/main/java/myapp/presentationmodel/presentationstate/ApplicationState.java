@@ -2,10 +2,10 @@ package myapp.presentationmodel.presentationstate;
 
 import org.opendolphin.core.BasePresentationModel;
 
-import myapp.util.veneer.FX_BooleanAttribute;
-import myapp.util.veneer.FX_EnumAttribute;
+import myapp.util.veneer.BooleanAttributeFX;
+import myapp.util.veneer.EnumAttributeFX;
 import myapp.util.Language;
-import myapp.util.veneer.FX_StringAttribute;
+import myapp.util.veneer.StringAttributeFX;
 import myapp.util.veneer.PresentationModelVeneer;
 
 /**
@@ -17,10 +17,7 @@ public class ApplicationState extends PresentationModelVeneer {
         super(pm);
     }
 
-    public final FX_StringAttribute         applicationTitle = new FX_StringAttribute(getPresentationModel() , ApplicationStateAtt.APPLICATION_TITLE);
-    public final FX_EnumAttribute<Language> language         = new FX_EnumAttribute(getPresentationModel()   , ApplicationStateAtt.LANGUAGE, Language.class);
-    public final FX_BooleanAttribute        cleanData        = new FX_BooleanAttribute(getPresentationModel(), ApplicationStateAtt.CLEAN_DATA);
-    public final FX_BooleanAttribute        redoDisabled     = new FX_BooleanAttribute(getPresentationModel(), ApplicationStateAtt.REDO_DISABLED);
-    public final FX_BooleanAttribute        undoDisabled     = new FX_BooleanAttribute(getPresentationModel(), ApplicationStateAtt.UNDO_DISABLED);
-
+    public final StringAttributeFX         applicationTitle = new StringAttributeFX(getPresentationModel() , ApplicationStateAtt.APPLICATION_TITLE);
+    public final EnumAttributeFX<Language> language         = new EnumAttributeFX<>(getPresentationModel()   , ApplicationStateAtt.LANGUAGE, Language.class);
+    public final BooleanAttributeFX        cleanData        = new BooleanAttributeFX(getPresentationModel(), ApplicationStateAtt.CLEAN_DATA);
 }

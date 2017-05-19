@@ -1,4 +1,4 @@
-package myapp.util;
+package myapp.util.veneer.dolphinattributeadapter;
 
 /**
  * @author Dieter Holz

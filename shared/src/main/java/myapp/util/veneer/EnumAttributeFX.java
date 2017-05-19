@@ -8,15 +8,16 @@ import javafx.beans.property.ObjectProperty;
 import org.opendolphin.core.PresentationModel;
 
 import myapp.util.AttributeDescription;
+import myapp.util.veneer.dolphinattributeadapter.EnumAttributeAdapter;
 
 /**
  * @author Dieter Holz
  */
-public class FX_EnumAttribute<T extends Enum<T>> extends FX_Attribute<ObjectProperty<T>, T> {
+public class EnumAttributeFX<T extends Enum<T>> extends AttributeFX<ObjectProperty<T>, T> {
 
     private final Class<T> clazz;
 
-    public FX_EnumAttribute(PresentationModel pm, AttributeDescription attributeDescription, Class<T> clazz) {
+    public EnumAttributeFX(PresentationModel pm, AttributeDescription attributeDescription, Class<T> clazz) {
         super(pm, attributeDescription,
               createRegex(clazz),
               new EnumAttributeAdapter<>(valueAttribute(pm, attributeDescription), clazz));

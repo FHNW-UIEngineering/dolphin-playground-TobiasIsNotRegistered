@@ -2,10 +2,10 @@ package myapp.presentationmodel.person;
 
 import org.opendolphin.core.BasePresentationModel;
 
-import myapp.util.veneer.FX_BooleanAttribute;
-import myapp.util.veneer.FX_IntegerAttribute;
-import myapp.util.veneer.FX_LongAttribute;
-import myapp.util.veneer.FX_StringAttribute;
+import myapp.util.veneer.BooleanAttributeFX;
+import myapp.util.veneer.IntegerAttributeFX;
+import myapp.util.veneer.LongAttributeFX;
+import myapp.util.veneer.StringAttributeFX;
 import myapp.util.veneer.PresentationModelVeneer;
 
 /**
@@ -16,8 +16,8 @@ public class Person extends PresentationModelVeneer {
         super(pm);
     }
 
-    public final FX_LongAttribute    id      = new FX_LongAttribute(getPresentationModel()   , PersonAtt.ID);
-    public final FX_StringAttribute  name    = new FX_StringAttribute(getPresentationModel() , PersonAtt.NAME);
-    public final FX_IntegerAttribute age     = new FX_IntegerAttribute(getPresentationModel(), PersonAtt.AGE);
-    public final FX_BooleanAttribute isAdult = new FX_BooleanAttribute(getPresentationModel(), PersonAtt.IS_ADULT);
+    public final LongAttributeFX    id      = new LongAttributeFX(getPresentationModel()   , PersonAtt.ID);
+    public final StringAttributeFX  name    = new StringAttributeFX(getPresentationModel() , PersonAtt.NAME);
+    public final IntegerAttributeFX age     = new IntegerAttributeFX(getPresentationModel(), PersonAtt.AGE);
+    public final BooleanAttributeFX isAdult = new BooleanAttributeFX(getPresentationModel(), PersonAtt.IS_ADULT);
 }

@@ -1,4 +1,4 @@
-package myapp.util.veneer;
+package myapp.util.veneer.dolphinattributeadapter;
 
 import javafx.beans.property.SimpleObjectProperty;
 
@@ -10,8 +10,8 @@ import org.opendolphin.core.Attribute;
 public class EnumAttributeAdapter<T extends Enum<T>> extends SimpleObjectProperty<T> {
     private final ObjectAttributeAdapter<T> wrapper;
 
-    public EnumAttributeAdapter(Attribute valueAttribute, Class<T> clazz) {
-        wrapper = new ObjectAttributeAdapter<T>(valueAttribute, new EnumConverter<T>(clazz));
+    public EnumAttributeAdapter(Attribute attribute, Class<T> clazz) {
+        wrapper = new ObjectAttributeAdapter<>(attribute, new EnumConverter<>(clazz));
         wrapper.addListener((observable, oldValue, newValue) -> fireValueChangedEvent());
     }
 

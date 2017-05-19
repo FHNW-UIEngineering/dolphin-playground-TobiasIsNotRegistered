@@ -5,14 +5,15 @@ import javafx.beans.property.StringProperty;
 import org.opendolphin.core.PresentationModel;
 
 import myapp.util.AttributeDescription;
+import myapp.util.veneer.dolphinattributeadapter.StringAttributeAdapter;
 
 /**
  * @author Dieter Holz
  */
-public class FX_StringAttribute extends FX_Attribute<StringProperty, String> {
+public class StringAttributeFX extends AttributeFX<StringProperty, String> {
     private static final String REGEX = ".*";
 
-    public FX_StringAttribute(PresentationModel pm, AttributeDescription attributeDescription) {
+    public StringAttributeFX(PresentationModel pm, AttributeDescription attributeDescription) {
         super(pm, attributeDescription,
               REGEX,
               new StringAttributeAdapter(valueAttribute(pm, attributeDescription)));

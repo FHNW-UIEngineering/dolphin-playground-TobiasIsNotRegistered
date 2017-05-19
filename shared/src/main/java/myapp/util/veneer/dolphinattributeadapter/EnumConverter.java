@@ -1,6 +1,4 @@
-package myapp.util.veneer;
-
-import myapp.util.AttributeValueConverter;
+package myapp.util.veneer.dolphinattributeadapter;
 
 /**
  * @author Dieter Holz

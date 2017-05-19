@@ -1,4 +1,4 @@
-package myapp.util.veneer;
+package myapp.util.veneer.dolphinattributeadapter;
 
 import java.lang.ref.WeakReference;
 
@@ -9,10 +9,8 @@ import javafx.beans.property.SimpleObjectProperty;
 import org.opendolphin.core.Attribute;
 import org.opendolphin.core.PresentationModel;
 
-import myapp.util.AttributeValueConverter;
-
 /**
- * JavaFX property wrapper around an the value of a dolphin attribute.
+ * JavaFX property wrapper around the value of a dolphin attribute.
  * <p>
  * Changing the dirty state or any other meta-info of the attribute will not trigger a valueChangeEvent.
  *

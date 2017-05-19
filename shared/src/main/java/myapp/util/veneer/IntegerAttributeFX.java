@@ -5,15 +5,16 @@ import javafx.beans.property.IntegerProperty;
 import org.opendolphin.core.PresentationModel;
 
 import myapp.util.AttributeDescription;
+import myapp.util.veneer.dolphinattributeadapter.IntegerAttributeAdapter;
 
 /**
  * @author Dieter Holz
  */
-public class FX_IntegerAttribute extends FX_Attribute<IntegerProperty, Number> {
+public class IntegerAttributeFX extends AttributeFX<IntegerProperty, Number> {
     private static final String REGEX          = "[+-]?[\\d']{1,14}";
     private static final String FORMAT_PATTERN = "%,d";
 
-    public FX_IntegerAttribute(PresentationModel pm, AttributeDescription attributeDescription) {
+    public IntegerAttributeFX(PresentationModel pm, AttributeDescription attributeDescription) {
         super(pm, attributeDescription,
               REGEX,
               new IntegerAttributeAdapter(valueAttribute(pm, attributeDescription)));

@@ -5,15 +5,16 @@ import javafx.beans.property.LongProperty;
 import org.opendolphin.core.PresentationModel;
 
 import myapp.util.AttributeDescription;
+import myapp.util.veneer.dolphinattributeadapter.LongAttributeAdapter;
 
 /**
  * @author Dieter Holz
  */
-public class FX_LongAttribute extends FX_Attribute<LongProperty, Number> {
+public class LongAttributeFX extends AttributeFX<LongProperty, Number> {
     private static final String REGEX          = "[+-]?[\\d']+";
     private static final String FORMAT_PATTERN = "%,d";
 
-    public FX_LongAttribute(PresentationModel pm, AttributeDescription attributeDescription) {
+    public LongAttributeFX(PresentationModel pm, AttributeDescription attributeDescription) {
         super(pm, attributeDescription,
               REGEX,
               new LongAttributeAdapter(valueAttribute(pm, attributeDescription)));

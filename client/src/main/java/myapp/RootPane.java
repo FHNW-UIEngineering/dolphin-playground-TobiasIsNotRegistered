@@ -30,8 +30,8 @@ import myapp.presentationmodel.presentationstate.ApplicationStateAtt;
 import myapp.util.AdditionalTag;
 import myapp.util.Language;
 import myapp.util.ViewMixin;
-import myapp.util.veneer.FX_Attribute;
-import myapp.util.veneer.FX_BooleanAttribute;
+import myapp.util.veneer.AttributeFX;
+import myapp.util.veneer.BooleanAttributeFX;
 
 /**
  * Implementation of the view details, event handling, and binding.
@@ -46,6 +46,7 @@ class RootPane extends GridPane implements ViewMixin, BasePmMixin {
     private static final String INVALID_STYLE   = "invalid";
     private static final String MANDATORY_STYLE = "mandatory";
 
+    // clientDolphin is the single entry point to the PresentationModel-Layer
     private final ClientDolphin clientDolphin;
 
     private Label headerLabel;
@@ -68,8 +69,10 @@ class RootPane extends GridPane implements ViewMixin, BasePmMixin {
     private Button germanButton;
     private Button englishButton;
 
+    private final Person personProxy;
+
+    //always needed
     private final ApplicationState ps;
-    private final Person           personProxy;
 
     RootPane(ClientDolphin clientDolphin) {
         this.clientDolphin = clientDolphin;
@@ -165,8 +168,8 @@ class RootPane extends GridPane implements ViewMixin, BasePmMixin {
 
     @Override
     public void setupBindings() {
-        setupBindings_DolphinBased();
-        //setupBindings_VeneerBased();
+        //setupBindings_DolphinBased();
+        setupBindings_VeneerBased();
     }
 
     private void setupBindings_DolphinBased() {
@@ -238,7 +241,7 @@ class RootPane extends GridPane implements ViewMixin, BasePmMixin {
         resetButton.disableProperty().bind(personProxy.dirtyProperty().not());
     }
 
-    private void setupBinding(Label label, TextField field, FX_Attribute attribute) {
+    private void setupBinding(Label label, TextField field, AttributeFX attribute) {
         setupBinding(label, attribute);
 
         field.textProperty().bindBidirectional(attribute.userFacingStringProperty());
@@ -247,12 +250,12 @@ class RootPane extends GridPane implements ViewMixin, BasePmMixin {
                                                                  ));
     }
 
-    private void setupBinding(Label label, CheckBox checkBox, FX_BooleanAttribute attribute) {
+    private void setupBinding(Label label, CheckBox checkBox, BooleanAttributeFX attribute) {
         setupBinding(label, attribute);
         checkBox.selectedProperty().bindBidirectional(attribute.valueProperty());
     }
 
-    private void setupBinding(Label label, FX_Attribute attribute){
+    private void setupBinding(Label label, AttributeFX attribute){
         label.textProperty().bind(Bindings.createStringBinding(() -> attribute.getLabel() + (attribute.isMandatory() ? " *" : "  "),
                                                                attribute.labelProperty(),
                                                                attribute.mandatoryProperty()));

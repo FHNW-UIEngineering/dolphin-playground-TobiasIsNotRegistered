@@ -1,6 +1,7 @@
 package myapp.controller;
 
 import org.opendolphin.core.server.ServerPresentationModel;
+import org.opendolphin.core.server.comm.ActionRegistry;
 
 import myapp.presentationmodel.PMDescription;
 import myapp.presentationmodel.BasePmMixin;
@@ -9,15 +10,21 @@ import myapp.util.Controller;
 import myapp.util.Language;
 
 /**
+ *
  * @author Dieter Holz
  */
-public class PresentationStateController extends Controller implements BasePmMixin {
+public class ApplicationStateController extends Controller implements BasePmMixin {
 
     private ApplicationState ps;
 
     @Override
+    protected void registerCommands(ActionRegistry actionRegistry) {
+        //no specific commands needed
+    }
+
+    @Override
     protected void initializeBasePMs() {
-        ServerPresentationModel presentationStatePM = createProxyPM(PMDescription.APPLICATION_STATE, BasePmMixin.APPLICATION_STATE_ID);
+        ServerPresentationModel presentationStatePM = createProxyPM(PMDescription.APPLICATION_STATE, APPLICATION_STATE_PM_ID);
 
         ps = new ApplicationState(presentationStatePM);
     }
@@ -26,14 +33,12 @@ public class PresentationStateController extends Controller implements BasePmMix
     protected void setDefaultValues() {
         ps.language.setValue(Language.ENGLISH);
         ps.cleanData.setValue(true);
-        ps.undoDisabled.setValue(true);
-        ps.redoDisabled.setValue(true);
     }
 
     @Override
     protected void setupValueChangedListener() {
         ps.language.valueProperty()
-                   .addListener(($, $$, newValue) -> translate(ps, newValue));
+                   .addListener(($, $$, language) -> translate(ps, language));
     }
 
 }
