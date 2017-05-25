@@ -1,3 +1,22 @@
+#Commit Proposal
+
+Matrikel Number: 15-649-239
+
+Project idea short description:
+
+My father works for the city of zurich and due to the nature of government institutions there are a lot of different departements and many employees, which all know eachother relatively well and have been working together for several years. Now, when it's getting 12 o'clock on a normal workday, they usually want to go eat something together, which can get rather chaotic. Some don't have much time, some have allergies or are vegan, some simply hate self-service restaurants like the Manor Mensa. It's not a surprise that my dad would like to optimize this process, and I think he's quite lucky to have me, an IT-student, as his son :). We discussed this idea a little bit and described some core features:
+
+-people need to be able to fill in their name -they have to be able to fill in their idea on where to go -ideas entered once should be displayed in a dropdown menue for future user, so as to other users don't write another name for the same restaurant or have typos in their textfield -there should be a ranking, based on the most chosen restaurant -the app is day-based, which means there will be no calendar function, and the data stores would be deleted at midnight -participants only need the links and that's all (like doodle)
+
+____additional features:
+
+the app suggests groups if a lot of people enter different restaurants, those groups will eat at individual places
+there should be a 'finito'-button which ends the survey and prompts a field in which the name of the person who is going to make the reservation should be entered (this person would be responsible)
+the applikation can notify participants through windows notifications (not sure how to do that, but would be pretty cool!
+the application should run on a real server and is usable for my father.
+
+I'm especially interested in the use case showed on OpenDolphin's website "OpenDolphin for team applications", as people definitely need to be able to enter their suggestions simultaneously (and also monitor them in realtime).
+
 #OpenDolphin Template
 
 This project provides a template for using [OpenDolphin](http://open-dolphin.org) 
