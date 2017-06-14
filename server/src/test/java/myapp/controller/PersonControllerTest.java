@@ -13,7 +13,7 @@ import org.opendolphin.core.server.ServerPresentationModel;
 
 import myapp.presentationmodel.PMDescription;
 import myapp.presentationmodel.person.Person;
-import myapp.presentationmodel.person.PersonAtt;
+import myapp.presentationmodel.person.RocketAtt;
 import myapp.service.SomeService;
 import myapp.util.DTOMixin;
 
@@ -84,7 +84,7 @@ public class PersonControllerTest {
         p.name.setValue("xyz");
 
         //then
-        assertEquals("xyz", pm.getAt(PersonAtt.NAME.name()).getValue());
+        assertEquals("xyz", pm.getAt(RocketAtt.NAME.name()).getValue());
 
     }
 

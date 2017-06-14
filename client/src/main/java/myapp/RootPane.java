@@ -12,6 +12,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 
+import myapp.presentationmodel.rockets.Rocket;
+import myapp.presentationmodel.rockets.RocketsCommands;
 import org.opendolphin.binding.Converter;
 import org.opendolphin.binding.JFXBinder;
 import org.opendolphin.core.Attribute;
@@ -22,9 +24,7 @@ import org.opendolphin.core.client.ClientDolphin;
 import org.opendolphin.core.client.ClientPresentationModel;
 
 import myapp.presentationmodel.BasePmMixin;
-import myapp.presentationmodel.person.Person;
-import myapp.presentationmodel.person.PersonAtt;
-import myapp.presentationmodel.person.PersonCommands;
+import myapp.presentationmodel.rockets.RocketAtt;
 import myapp.presentationmodel.presentationstate.ApplicationState;
 import myapp.presentationmodel.presentationstate.ApplicationStateAtt;
 import myapp.util.AdditionalTag;
@@ -57,19 +57,17 @@ class RootPane extends GridPane implements ViewMixin, BasePmMixin {
     private Label     nameLabel;
     private TextField nameField;
 
-    private Label     ageLabel;
-    private TextField ageField;
+    private Label missionLabel;
+    private TextField missionField;
 
-    private Label    isAdultLabel;
-    private CheckBox isAdultCheckBox;
+    private Label launchLabel;
+    private TextField launchField;
 
-    private Button saveButton;
-    private Button resetButton;
     private Button nextButton;
     private Button germanButton;
     private Button englishButton;
 
-    private final Person personProxy;
+    private final Rocket rocketProxy;
 
     //always needed
     private final ApplicationState ps;
@@ -77,7 +75,7 @@ class RootPane extends GridPane implements ViewMixin, BasePmMixin {
     RootPane(ClientDolphin clientDolphin) {
         this.clientDolphin = clientDolphin;
         ps = getApplicationState();
-        personProxy = getPersonProxy();
+        rocketProxy = getRocketProxy();
 
         init();
     }
@@ -104,14 +102,12 @@ class RootPane extends GridPane implements ViewMixin, BasePmMixin {
         nameLabel = new Label();
         nameField = new TextField();
 
-        ageLabel = new Label();
-        ageField = new TextField();
+        missionLabel = new Label();
+        missionField = new TextField();
 
-        isAdultLabel    = new Label();
-        isAdultCheckBox = new CheckBox();
+        launchLabel = new Label();
+        launchField = new TextField();
 
-        saveButton    = new Button("Save");
-        resetButton   = new Button("Reset");
         nextButton    = new Button("Next");
         germanButton  = new Button("German");
         englishButton = new Button("English");
@@ -130,11 +126,11 @@ class RootPane extends GridPane implements ViewMixin, BasePmMixin {
         add(idField        , 1, 1, 4, 1);
         add(nameLabel      , 0, 2);
         add(nameField      , 1, 2, 4, 1);
-        add(ageLabel       , 0, 3);
-        add(ageField       , 1, 3, 4, 1);
-        add(isAdultLabel   , 0, 4);
-        add(isAdultCheckBox, 1, 4, 4, 1);
-        add(new HBox(5, saveButton, resetButton, nextButton, germanButton, englishButton), 0, 5, 5, 1);
+        add(missionLabel, 0, 3);
+        add(missionField, 1, 3, 4, 1);
+        add(launchLabel   , 0, 4);
+        add(launchField, 1, 4, 4, 1);
+        add(new HBox(5, nextButton, germanButton, englishButton), 0, 5, 5, 1);
     }
 
     @Override
@@ -143,9 +139,7 @@ class RootPane extends GridPane implements ViewMixin, BasePmMixin {
         // or set a value on an Attribute
 
         ApplicationState ps = getApplicationState();
-        saveButton.setOnAction(   $ -> clientDolphin.send(PersonCommands.SAVE));
-        resetButton.setOnAction(  $ -> clientDolphin.send(PersonCommands.RESET));
-        nextButton.setOnAction(   $ -> clientDolphin.send(PersonCommands.LOAD_SOME_PERSON));
+        nextButton.setOnAction(   $ -> clientDolphin.send(RocketsCommands.LOAD_ROCKET));
 
         germanButton.setOnAction( $ -> ps.language.setValue(Language.GERMAN));
         englishButton.setOnAction($ -> ps.language.setValue(Language.ENGLISH));
@@ -153,17 +147,17 @@ class RootPane extends GridPane implements ViewMixin, BasePmMixin {
 
     @Override
     public void setupValueChangedListeners() {
-        personProxy.name.dirtyProperty().addListener((observable, oldValue, newValue)    -> updateStyle(nameField      , DIRTY_STYLE, newValue));
-        personProxy.age.dirtyProperty().addListener((observable, oldValue, newValue)     -> updateStyle(ageField       , DIRTY_STYLE, newValue));
-        personProxy.isAdult.dirtyProperty().addListener((observable, oldValue, newValue) -> updateStyle(isAdultCheckBox, DIRTY_STYLE, newValue));
+        rocketProxy.name.dirtyProperty().addListener((observable, oldValue, newValue)    -> updateStyle(nameField      , DIRTY_STYLE, newValue));
+        rocketProxy.mission.dirtyProperty().addListener((observable, oldValue, newValue)     -> updateStyle(missionField, DIRTY_STYLE, newValue));
+        rocketProxy.launch.dirtyProperty().addListener((observable, oldValue, newValue) -> updateStyle(launchField, DIRTY_STYLE, newValue));
 
-        personProxy.name.validProperty().addListener((observable, oldValue, newValue)    -> updateStyle(nameField      , INVALID_STYLE, !newValue));
-        personProxy.age.validProperty().addListener((observable, oldValue, newValue)     -> updateStyle(ageField       , INVALID_STYLE, !newValue));
-        personProxy.isAdult.validProperty().addListener((observable, oldValue, newValue) -> updateStyle(isAdultCheckBox, INVALID_STYLE, !newValue));
+        rocketProxy.name.validProperty().addListener((observable, oldValue, newValue)    -> updateStyle(nameField      , INVALID_STYLE, !newValue));
+        rocketProxy.mission.validProperty().addListener((observable, oldValue, newValue)     -> updateStyle(missionField, INVALID_STYLE, !newValue));
+        rocketProxy.launch.validProperty().addListener((observable, oldValue, newValue) -> updateStyle(launchField, INVALID_STYLE, !newValue));
 
-        personProxy.name.mandatoryProperty().addListener((observable, oldValue, newValue)    -> updateStyle(nameField      , MANDATORY_STYLE, newValue));
-        personProxy.age.mandatoryProperty().addListener((observable, oldValue, newValue)     -> updateStyle(ageField       , MANDATORY_STYLE, newValue));
-        personProxy.isAdult.mandatoryProperty().addListener((observable, oldValue, newValue) -> updateStyle(isAdultCheckBox, MANDATORY_STYLE, newValue));
+        rocketProxy.name.mandatoryProperty().addListener((observable, oldValue, newValue)    -> updateStyle(nameField      , MANDATORY_STYLE, newValue));
+        rocketProxy.mission.mandatoryProperty().addListener((observable, oldValue, newValue)     -> updateStyle(missionField, MANDATORY_STYLE, newValue));
+        rocketProxy.launch.mandatoryProperty().addListener((observable, oldValue, newValue) -> updateStyle(launchField, MANDATORY_STYLE, newValue));
     }
 
     @Override
@@ -174,49 +168,53 @@ class RootPane extends GridPane implements ViewMixin, BasePmMixin {
 
     private void setupBindings_DolphinBased() {
         // you can fetch all existing PMs from the modelstore via clientDolphin
-        ClientPresentationModel personProxyPM = clientDolphin.getAt(BasePmMixin.PERSON_PROXY_PM_ID);
+        ClientPresentationModel rocketProxyPM = clientDolphin.getAt(BasePmMixin.ROCKET_PROXY_PM_ID);
 
         //JFXBinder is ui toolkit agnostic. We have to use Strings
-        JFXBinder.bind(PersonAtt.NAME.name())
-                 .of(personProxyPM)
-                 .using(value -> value + ", " + personProxyPM.getAt(PersonAtt.AGE.name()).getValue())
+        JFXBinder.bind(RocketAtt.NAME.name())
+                 .of(rocketProxyPM)
+                 .using(value -> value + ", " + rocketProxyPM.getAt(RocketAtt.MISSION.name()).getValue())
                  .to("text")
                  .of(headerLabel);
 
-        JFXBinder.bind(PersonAtt.AGE.name())
-                 .of(personProxyPM)
-                 .using(value -> personProxyPM.getAt(PersonAtt.NAME.name()).getValue() + ", " + value)
+        JFXBinder.bind(RocketAtt.MISSION.name())
+                 .of(rocketProxyPM)
+                 .using(value -> rocketProxyPM.getAt(RocketAtt.NAME.name()).getValue() + ", " + value)
                  .to("text")
                  .of(headerLabel);
 
-        JFXBinder.bind(PersonAtt.NAME.name(), Tag.LABEL).of(personProxyPM).to("text").of(nameLabel);
-        JFXBinder.bind(PersonAtt.NAME.name()).of(personProxyPM).to("text").of(nameField);
-        JFXBinder.bind("text").of(nameField).to(PersonAtt.NAME.name()).of(personProxyPM);
+        JFXBinder.bind(RocketAtt.LAUNCH.name())
+                .of(rocketProxyPM)
+                .using(value -> rocketProxyPM.getAt(RocketAtt.LAUNCH.name()).getValue() + ", " + value)
+                .to("text")
+                .of(headerLabel);
 
-        JFXBinder.bind(PersonAtt.AGE.name(), Tag.LABEL).of(personProxyPM).to("text").of(ageLabel);
-        JFXBinder.bind(PersonAtt.AGE.name()).of(personProxyPM).to("text").of(ageField);
+        JFXBinder.bind(RocketAtt.LAUNCH.name(), Tag.LABEL).of(rocketProxyPM).to("text").of(launchLabel);
+        JFXBinder.bind(RocketAtt.LAUNCH.name()).of(rocketProxyPM).to("text").of(launchField);
+        JFXBinder.bind("text").of(launchField).to(RocketAtt.LAUNCH.name()).of(rocketProxyPM);
+
+        JFXBinder.bind(RocketAtt.NAME.name(), Tag.LABEL).of(rocketProxyPM).to("text").of(nameLabel);
+        JFXBinder.bind(RocketAtt.NAME.name()).of(rocketProxyPM).to("text").of(nameField);
+        JFXBinder.bind("text").of(nameField).to(RocketAtt.NAME.name()).of(rocketProxyPM);
+
+        JFXBinder.bind(RocketAtt.MISSION.name(), Tag.LABEL).of(rocketProxyPM).to("text").of(missionLabel);
+        JFXBinder.bind(RocketAtt.MISSION.name()).of(rocketProxyPM).to("text").of(missionField);
         Converter toIntConverter = value -> {
             try {
                 int newValue = Integer.parseInt(value.toString());
-                personProxyPM.getAt(PersonAtt.AGE.name(), AdditionalTag.VALID).setValue(true);
-                personProxyPM.getAt(PersonAtt.AGE.name(), AdditionalTag.VALIDATION_MESSAGE).setValue("OK");
+                rocketProxyPM.getAt(RocketAtt.MISSION.name(), AdditionalTag.VALID).setValue(true);
+                rocketProxyPM.getAt(RocketAtt.MISSION.name(), AdditionalTag.VALIDATION_MESSAGE).setValue("OK");
 
                 return newValue;
             } catch (NumberFormatException e) {
-                personProxyPM.getAt(PersonAtt.AGE.name(), AdditionalTag.VALID).setValue(false);
-                personProxyPM.getAt(PersonAtt.AGE.name(), AdditionalTag.VALIDATION_MESSAGE).setValue("Not a number");
-                return personProxyPM.getAt(PersonAtt.AGE.name()).getValue();
+                rocketProxyPM.getAt(RocketAtt.MISSION.name(), AdditionalTag.VALID).setValue(false);
+                rocketProxyPM.getAt(RocketAtt.MISSION.name(), AdditionalTag.VALIDATION_MESSAGE).setValue("Not a number");
+                return rocketProxyPM.getAt(RocketAtt.MISSION.name()).getValue();
             }
         };
-        JFXBinder.bind("text").of(ageField).using(toIntConverter).to(PersonAtt.AGE.name()).of(personProxyPM);
+        JFXBinder.bind("text").of(missionField).using(toIntConverter).to(RocketAtt.MISSION.name()).of(rocketProxyPM);
 
-        JFXBinder.bind(PersonAtt.IS_ADULT.name(), Tag.LABEL).of(personProxyPM).to("text").of(isAdultLabel);
-        JFXBinder.bind(PersonAtt.IS_ADULT.name()).of(personProxyPM).to("selected").of(isAdultCheckBox);
-        JFXBinder.bind("selected").of(isAdultCheckBox).to(PersonAtt.IS_ADULT.name()).of(personProxyPM);
-
-        Converter not = value -> !(boolean) value;
-        JFXBinder.bindInfo(Attribute.DIRTY_PROPERTY).of(personProxyPM).using(not).to("disable").of(saveButton);
-        JFXBinder.bindInfo(Attribute.DIRTY_PROPERTY).of(personProxyPM).using(not).to("disable").of(resetButton);
+        JFXBinder.bind(RocketAtt.LAUNCH.name(), Tag.LABEL).of(rocketProxyPM).to("text").of(missionLabel);
 
         PresentationModel presentationStatePM = clientDolphin.getAt(BasePmMixin.APPLICATION_STATE_PM_ID);
 
@@ -225,20 +223,20 @@ class RootPane extends GridPane implements ViewMixin, BasePmMixin {
     }
 
     private void setupBindings_VeneerBased(){
-        headerLabel.textProperty().bind(personProxy.name.valueProperty().concat(", ").concat(personProxy.age.valueProperty()));
+        headerLabel.textProperty().bind(rocketProxy.name.valueProperty().concat(", ").concat(rocketProxy.mission.valueProperty()));
 
-        idLabel.textProperty().bind(personProxy.id.labelProperty());
-        idField.textProperty().bind(personProxy.id.valueProperty().asString());
+        idLabel.textProperty().bind(rocketProxy.id.labelProperty());
+        idField.textProperty().bind(rocketProxy.id.valueProperty().asString());
 
-        setupBinding(nameLabel   , nameField      , personProxy.name);
-        setupBinding(ageLabel    , ageField       , personProxy.age);
-        setupBinding(isAdultLabel, isAdultCheckBox, personProxy.isAdult);
+        setupBinding(nameLabel   , nameField      , rocketProxy.name);
+        setupBinding(missionLabel, missionField, rocketProxy.mission);
+        setupBinding(launchLabel, launchField, rocketProxy.launch);
+
 
         germanButton.disableProperty().bind(Bindings.createBooleanBinding(() -> Language.GERMAN.equals(ps.language.getValue()), ps.language.valueProperty()));
         englishButton.disableProperty().bind(Bindings.createBooleanBinding(() -> Language.ENGLISH.equals(ps.language.getValue()), ps.language.valueProperty()));
 
-        saveButton.disableProperty().bind(personProxy.dirtyProperty().not());
-        resetButton.disableProperty().bind(personProxy.dirtyProperty().not());
+
     }
 
     private void setupBinding(Label label, TextField field, AttributeFX attribute) {

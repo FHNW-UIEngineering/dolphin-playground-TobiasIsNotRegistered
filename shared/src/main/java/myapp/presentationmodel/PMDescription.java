@@ -1,6 +1,6 @@
 package myapp.presentationmodel;
 
-import myapp.presentationmodel.person.PersonAtt;
+import myapp.presentationmodel.rockets.RocketAtt;
 import myapp.presentationmodel.presentationstate.ApplicationStateAtt;
 import myapp.util.AttributeDescription;
 
@@ -14,7 +14,8 @@ import myapp.util.AttributeDescription;
 public enum PMDescription {
 
     //todo: add all application specific PMDescriptions
-    PERSON("PersonPM", "PERSON", PersonAtt.values()),
+    ROCKET("RocketPM", "ROCKET", RocketAtt.values()),
+
 
 
     // ApplicationState is always needed

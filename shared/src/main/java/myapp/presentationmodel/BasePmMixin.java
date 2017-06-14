@@ -1,24 +1,26 @@
 package myapp.presentationmodel;
 
+import myapp.presentationmodel.rockets.Rocket;
 import org.opendolphin.core.BasePresentationModel;
 import org.opendolphin.core.Dolphin;
 
 import myapp.presentationmodel.person.Person;
 import myapp.presentationmodel.presentationstate.ApplicationState;
+import sun.plugin2.message.ReleaseRemoteObjectMessage;
 
 /**
- * @author Dieter Holz
+ * @author Sami-Klaus
  */
 public interface BasePmMixin {
     //todo: for all your basePMs (as delivered by your Controllers) specify constants and getter-methods like these
-    String PERSON_PROXY_PM_ID = PMDescription.PERSON.pmId(-777L);
+    String ROCKET_PROXY_PM_ID = PMDescription.ROCKET.pmId(-777L);
 
-    default BasePresentationModel getPersonProxyPM() {
-        return (BasePresentationModel) getDolphin().getAt(PERSON_PROXY_PM_ID);
+    default BasePresentationModel getRocketProxyPM() {
+        return (BasePresentationModel) getDolphin().getAt(ROCKET_PROXY_PM_ID);
     }
 
-    default Person getPersonProxy() {
-        return new Person(getPersonProxyPM());
+    default Rocket getRocketProxy() {
+        return new Rocket(getRocketProxyPM());
     }
 
     // always needed
